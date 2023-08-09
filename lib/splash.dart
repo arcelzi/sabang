@@ -30,7 +30,7 @@ class _SplashState extends State<Splash> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(color: Color(0xFF9CC8FC)),
+        decoration: BoxDecoration(color: Color(0xFFF5F6FB)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,7 +55,7 @@ class _SplashState extends State<Splash> {
               ],
             ),
             CircularProgressIndicator(
-              color: Colors.white,
+              color: Colors.grey,
             ),
           ],
         ),
