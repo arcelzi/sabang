@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sabang/menu/addnira.dart';
+import 'package:sabang/menu/payment.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -8,11 +10,46 @@ void main() {
 }
 
 class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
   @override
-  _Dashboard createState() => _Dashboard();
+  _DashboardState createState() => _DashboardState();
+  
 }
-
+class _DashboardState extends State<Dashboard>{
   final String FontPoppins = 'FontPoppins';
+    List menuList = [
+    {
+      "icon": FontAwesomeIcons.box,
+      "title": "Add Nira",
+      "color": Color(0xFF9EEDE6)
+    },
+    {
+      "icon": FontAwesomeIcons.wallet,
+      "title": "Payment",
+      "color": Color(0xFFAFA3FA)
+    },
+    {
+      "icon": FontAwesomeIcons.boxOpen,
+      "title": "Production",
+      "color": Color(0xFFFAE994)
+    },
+    {
+      "icon": FontAwesomeIcons.users,
+      "title": "Tappers",
+      "color": Color(0xFFE7C3D0)
+    },
+    {
+      "icon": FontAwesomeIcons.seedling,
+      "title": "Garden Control",
+      "color": Color(0xFFA5FC90)
+    },
+    {
+      "icon": FontAwesomeIcons.cartShopping,
+      "title": "Purchase",
+      "color": Color(0xFFFDA37C)
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +84,7 @@ class Dashboard extends StatefulWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 66),
+            margin: EdgeInsets.only(top: 60),
             child: Column(
               children: [
                 Container(
@@ -117,36 +154,45 @@ class Dashboard extends StatefulWidget {
           ),
           SingleChildScrollView(
             child: Container(
-              padding: const EdgeInsets.only(top: 90, left: 20, right: 20),
+              padding: const EdgeInsets.only(top: 55, left: 20, right: 20),
               child: Column(
                 children: [
                   LayoutBuilder(builder: (context, constraint) {
                     return Wrap(
                       spacing: 20,
                       runSpacing: 27,
-                      children: List.generate(6, (index) {
-                        return Container(
-                          height: 129.0,
-                          width: 159.0,
-                          decoration: BoxDecoration(
-                              color: Color(0xFF9EEDE6),
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                FontAwesomeIcons.box,
-                                size: 35,
-                              ),
-                              SizedBox(height: 17,),
-                              Text(
-                                "BOX",
-                                style: TextStyle(
-                                    fontFamily: FontPoppins,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                      children: List.generate(menuList.length, (index) {
+                        var item = menuList[index];
+                        return InkWell(
+                          onTap: (){
+                            if (index == 0) 
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> AddNira()));
+                            if (index == 1)
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Payment())));
+                          },
+                          child: Container(
+                            height: 129.0,
+                            width: 159.0,
+                            decoration: BoxDecoration(
+                                color: item["color"],
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  item["icon"],
+                                  size: 35,
+                                ),
+                                SizedBox(height: 17,),
+                                Text(
+                                  item["title"],
+                                  style: TextStyle(
+                                      fontFamily: FontPoppins,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }),
