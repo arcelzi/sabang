@@ -144,7 +144,7 @@ TextFormField buildPh() {
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Input Ph',
         hintStyle: TextStyle(color: Color(0xFFA9A9A9)),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder:OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
         enabledBorder: OutlineInputBorder(

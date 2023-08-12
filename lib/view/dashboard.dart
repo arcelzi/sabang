@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sabang/menu/addnira.dart';
 import 'package:sabang/menu/payment.dart';
+import 'package:sabang/menu/production.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -169,6 +170,8 @@ class _DashboardState extends State<Dashboard>{
                             Navigator.push(context, MaterialPageRoute(builder: (context)=> AddNira()));
                             if (index == 1)
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => Payment())));
+                            if (index == 2)
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Production())));
                           },
                           child: Container(
                             height: 129.0,
