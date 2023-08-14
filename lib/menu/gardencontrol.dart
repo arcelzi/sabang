@@ -36,13 +36,24 @@ class _GardenState extends State<Garden> {
         ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 80, vertical: 25),
+              padding: EdgeInsets.only(left: 20, right: 20),
               height: 617,
               width: 350,
               decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFD8D4D4),
+                    offset: const Offset(0, 0),
+                    blurRadius: 6,
+                    spreadRadius: 2,
+                  )
+                ],
                 borderRadius: BorderRadius.circular(14),
                 color: Color(0xFFFFFFFF),
               ),
@@ -52,18 +63,78 @@ class _GardenState extends State<Garden> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 9,),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Text(
+                            "Question",
+                            style: TextStyle(
+                                fontSize: 14, fontFamily: FontPoppins),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 9,
+                        ),
                         buildQuest(),
-                        SizedBox(height: 9,),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Text("Question",
+                              style: TextStyle(
+                                  fontFamily: FontPoppins, fontSize: 14)),
+                        ),
+                        SizedBox(
+                          height: 9,
+                        ),
                         buildQuest2(),
-                        SizedBox(height: 9,),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Text(
+                            "Question",
+                            style: TextStyle(
+                                fontFamily: FontPoppins, fontSize: 14),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 9,
+                        ),
                         buildQuest3(),
-                        SizedBox(height: 9,),
+                        Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Text("Tambah Foto",
+                                style: TextStyle(
+                                    fontFamily: FontPoppins, fontSize: 14))),
+                        SizedBox(
+                          height: 9,
+                        ),
                         buildPict()
                       ],
                     ),
                   )),
             ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 20),
+            height: 44,
+            width: 88,
+            child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF0E86F5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: Text(
+                  "Save",
+                  style: TextStyle(
+                      fontFamily: FontPoppins,
+                      fontSize: 14,
+                      color: Color(0xFFFFFFFF)),
+                )),
           )
         ],
       ),
@@ -132,40 +203,42 @@ Row buildQuest3() {
         child: TextFormField(
           textAlign: TextAlign.start,
           style: TextStyle(
-        fontSize: 14,
-        color: Color(0xFFA9A9A9),
+            fontSize: 14,
+            color: Color(0xFFA9A9A9),
           ),
           decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFFE9E9E9),
-        hintText: "Ya",
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+            filled: true,
+            fillColor: Color(0xFFE9E9E9),
+            hintText: "Ya",
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
           ),
         ),
       ),
-      SizedBox(width: 28 ,),
+      SizedBox(
+        width: 28,
+      ),
       Expanded(
         child: TextFormField(
           textAlign: TextAlign.start,
           style: TextStyle(
-        fontSize: 14,
-        color: Color(0xFFA9A9A9),
+            fontSize: 14,
+            color: Color(0xFFA9A9A9),
           ),
           decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFFE9E9E9),
-        hintText: "Tidak",
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+            filled: true,
+            fillColor: Color(0xFFE9E9E9),
+            hintText: "Tidak",
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
           ),
         ),
       ),
@@ -173,28 +246,19 @@ Row buildQuest3() {
   );
 }
 
-TextFormField buildPict() {
-  return TextFormField(
-    textAlign: TextAlign.start,
-    style: TextStyle(
-      fontSize: 14,
-      color: Color(0xFFA9A9A9),
+Container buildPict() {
+  return Container(
+    height: 185,
+    width: 215,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: Color(0xFFE9E9E9),
     ),
-    decoration: InputDecoration(
-      filled: true,
-      fillColor: Color(0xFFE9E9E9),
-      focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-      enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+    child: IconButton(
+      onPressed: () {},
+      icon: Icon(Icons.add_photo_alternate_rounded),
+      color: Color(0xFF6D6B6B),
+      iconSize: 45,
     ),
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return 'Tidak Boleh Kosong';
-      }
-      return null;
-    },
   );
 }
