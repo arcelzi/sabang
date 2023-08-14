@@ -5,6 +5,7 @@ import 'package:sabang/menu/addnira.dart';
 import 'package:sabang/menu/gardencontrol.dart';
 import 'package:sabang/menu/payment.dart';
 import 'package:sabang/menu/production.dart';
+import 'package:sabang/menu/purchase.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -175,6 +176,8 @@ class _DashboardState extends State<Dashboard>{
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => Production())));
                             if (index == 4)
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => Garden())));
+                            if (index == 5)
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Purchase())));
                           },
                           child: Container(
                             height: 129.0,
