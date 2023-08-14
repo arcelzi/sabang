@@ -42,7 +42,7 @@ class _AddNiraState extends State<AddNira> {
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Container(
               width: 350,
-              height: 334,
+              height: 380,
               margin: EdgeInsets.symmetric(horizontal: 80),
               padding: EdgeInsets.only(top: 5, left: 16, right: 16),
               decoration: BoxDecoration(
@@ -111,6 +111,9 @@ class _AddNiraState extends State<AddNira> {
             width: 88,
             child: ElevatedButton(
                 onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState?.save();
+                  }
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
@@ -135,6 +138,7 @@ class _AddNiraState extends State<AddNira> {
 
 TextFormField buildPh() {
   return TextFormField(
+    keyboardType: TextInputType.number,
     textAlign: TextAlign.start,
     style: TextStyle(
       fontSize: 14,
@@ -143,6 +147,7 @@ TextFormField buildPh() {
         filled: true,
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Input Ph',
+        helperText: "Tolong Masukkan Ph",
         hintStyle: TextStyle(color: Color(0xFFA9A9A9)),
         focusedBorder:OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -156,17 +161,20 @@ TextFormField buildPh() {
       }
       return null;
     },
+    onChanged: (value) {},
   );
 }
 
 TextFormField buildKadarField() {
   return TextFormField(
+    keyboardType: TextInputType.number,
     textAlign: TextAlign.start,
     style: TextStyle(fontSize: 14),
     decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Input BRIX',
+        helperText: "Tolong masukkan kadar gula",
         hintStyle: TextStyle(
           color: Color(0xFFA9A9A9),
         ),
@@ -182,20 +190,24 @@ TextFormField buildKadarField() {
       }
       return null;
     },
+    onChanged: (value) {},
   );
 }
 
 TextFormField buildLiterField() {
   return TextFormField(
+    keyboardType: TextInputType.number,
     textAlign: TextAlign.start,
     style: TextStyle(fontSize: 14),
     decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Masukkan Volume/liter',
+        helperText: "Tolong Masukkan Volume",
         hintStyle: TextStyle(
           color: Color(0xFFA9A9A9),
         ),
+        
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
@@ -208,5 +220,6 @@ TextFormField buildLiterField() {
       }
       return null;
     },
+    onChanged: (value) {},
   );
 }
