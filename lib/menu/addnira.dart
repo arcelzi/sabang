@@ -117,7 +117,7 @@ class _AddNiraState extends State<AddNira> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0E86F5),
+                  backgroundColor: Color(0xFFE0ADA2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)
                   )
@@ -147,7 +147,6 @@ TextFormField buildPh() {
         filled: true,
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Input Ph',
-        helperText: "Tolong Masukkan Ph",
         hintStyle: TextStyle(color: Color(0xFFA9A9A9)),
         focusedBorder:OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -174,7 +173,6 @@ TextFormField buildKadarField() {
         filled: true,
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Input BRIX',
-        helperText: "Tolong masukkan kadar gula",
         hintStyle: TextStyle(
           color: Color(0xFFA9A9A9),
         ),
@@ -203,7 +201,6 @@ TextFormField buildLiterField() {
         filled: true,
         fillColor: Color(0xFFE9E9E9),
         hintText: 'Masukkan Volume/liter',
-        helperText: "Tolong Masukkan Volume",
         hintStyle: TextStyle(
           color: Color(0xFFA9A9A9),
         ),

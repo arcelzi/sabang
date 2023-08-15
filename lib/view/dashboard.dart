@@ -7,6 +7,7 @@ import 'package:sabang/menu/payment.dart';
 import 'package:sabang/menu/production.dart';
 import 'package:sabang/menu/purchase.dart';
 import 'package:sabang/menu/tappers.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -25,32 +26,32 @@ class _DashboardState extends State<Dashboard>{
     {
       "icon": FontAwesomeIcons.box,
       "title": "Add Nira",
-      "color": Color(0xFF9EEDE6)
+      "color": Color(0xFF78937A)
     },
     {
       "icon": FontAwesomeIcons.wallet,
       "title": "Payment",
-      "color": Color(0xFFAFA3FA)
+      "color": Color(0xFF78937A)
     },
     {
       "icon": FontAwesomeIcons.boxOpen,
       "title": "Production",
-      "color": Color(0xFFFAE994)
+      "color": Color(0xFF78937A)
     },
     {
       "icon": FontAwesomeIcons.users,
       "title": "Tappers",
-      "color": Color(0xFFE7C3D0)
+      "color": Color(0xFF78937A)
     },
     {
       "icon": FontAwesomeIcons.seedling,
       "title": "Garden Control",
-      "color": Color(0xFFA5FC90)
+      "color": Color(0xFF78937A)
     },
     {
       "icon": FontAwesomeIcons.cartShopping,
       "title": "Purchase",
-      "color": Color(0xFFFDA37C)
+      "color": Color(0xFF78937A)
     },
   ];
 
@@ -72,10 +73,9 @@ class _DashboardState extends State<Dashboard>{
                   children: [
                     Text(
                       "Dashboard",
-                      style: TextStyle(
-                          fontFamily: FontPoppins,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                      style: GoogleFonts.sourceSansPro(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
                           color: Colors.black),
                     ),
                   ],
@@ -96,7 +96,7 @@ class _DashboardState extends State<Dashboard>{
                   height: 107,
                   width: 336,
                   decoration: BoxDecoration(
-                      color: Color(0xFF00BBD8),
+                      color: Color(0xFF78937A),
                       borderRadius: BorderRadius.circular(15)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,20 +108,20 @@ class _DashboardState extends State<Dashboard>{
                           children: [
                             Text(
                               '10 Liter',
-                              style: TextStyle(
-                                  fontFamily: FontPoppins,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
+                              style:GoogleFonts.sourceSansPro(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white),
                             ),
                             SizedBox(
                               height: 5,
                             ),
                             Text(
                               'Nira Hari ini',
-                              style: TextStyle(
-                                fontFamily: FontPoppins,
-                                fontSize: 14,
+                              style: GoogleFonts.sourceSansPro(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
                               ),
                             ),
                           ],
@@ -133,19 +133,18 @@ class _DashboardState extends State<Dashboard>{
                           children: [
                             Text(
                               "100KG",
-                              style: TextStyle(
-                                  fontFamily: FontPoppins,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
+                              style: GoogleFonts.sourceSansPro(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white),
                             ),
                             SizedBox(
                               height: 5,
                             ),
                             Text(
                               'Production',
-                              style: TextStyle(
-                                  fontFamily: FontPoppins, fontSize: 14),
+                              style: GoogleFonts.sourceSansPro(
+                                 fontSize: 16, color: Colors.white, fontWeight: FontWeight.w300),
                             )
                           ],
                         ),
@@ -194,14 +193,15 @@ class _DashboardState extends State<Dashboard>{
                                 Icon(
                                   item["icon"],
                                   size: 35,
+                                  color: Colors.white,
                                 ),
                                 SizedBox(height: 17,),
                                 Text(
                                   item["title"],
-                                  style: TextStyle(
-                                      fontFamily: FontPoppins,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                  style: GoogleFonts.sourceSansPro(
+                                    color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ],
                             ),

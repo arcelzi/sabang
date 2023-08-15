@@ -38,7 +38,7 @@ class _SplashState extends State<Splash> {
             Column(
               children: [
                 Image.asset(
-                  './assets/images/palmtree.png',
+                  '../assets/images/palm.png',
                   height: 400.0,
                   width: 400.0,
                 ),
@@ -47,7 +47,7 @@ class _SplashState extends State<Splash> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: FontPoppins,
-                    color: Color(0xFF0E86F5),
+                    color: Color(0xFF78937A),
                     fontWeight: FontWeight.bold,
                     fontSize: 68.0,
                   ),

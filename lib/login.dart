@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                     fontFamily: FontPoppins,
                     fontSize: 50,
-                    color: Color(0xFF0E86F5),
+                    color: Color(0xFF78937A),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(25)),
                   prefixIcon: Icon(
                     Icons.person,
-                    color: Color(0xFF2384F5),
+                    color: Color(0xFF78937A),
                   ),
                   labelText: 'Username',
                   hintText: 'Enter a Username'),
@@ -68,7 +68,7 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(25)),
                   prefixIcon: Icon(
                     Icons.lock,
-                    color: Color(0XFF2384F5),
+                    color: Color(0xFF78937A),
                   ),
                   labelText: 'Password',
                   hintText: 'Enter a Password'),
@@ -81,9 +81,10 @@ class _LoginState extends State<Login> {
             height: 55,
             width: 320,
             decoration: BoxDecoration(
-                color: Color(0xFF0E86F5),
+                color: Color(0xFF78937A),
                 borderRadius: BorderRadius.circular(25)),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF78937A)),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
               },
