@@ -132,6 +132,7 @@ class _PurchaseState extends State<Purchase> {
                   )),
             ),
           ),
+          SizedBox(height: 20,),
           Container(
             margin: EdgeInsets.only(right: 31),
             width: 88,
