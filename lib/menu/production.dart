@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sabang/menu/addproduct.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Production extends StatefulWidget {
   const Production({super.key});
@@ -29,8 +30,7 @@ class _ProductionState extends State<Production> {
         centerTitle: true,
         title: Text(
           "Production",
-          style: TextStyle(
-              fontFamily: FontPoppins,
+          style: GoogleFonts.sourceSansPro(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black),
@@ -74,10 +74,10 @@ class _ProductionState extends State<Production> {
             Navigator.push(context,
                 MaterialPageRoute(builder: ((context) => AddProduct())));
           },
-          backgroundColor: Colors.black,
+          backgroundColor: Color(0xFFE5E1E1),
           child: Icon(FontAwesomeIcons.database),
           tooltip: 'Add Product',
-          foregroundColor: Color(0xFF437FF4)),
+          foregroundColor: Color(0xFFE0ADA2)),
     );
   }
 }

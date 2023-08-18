@@ -21,7 +21,8 @@ class _AddProductState extends State<AddProduct> {
       _factory.add(key);
     });
   }
-   String _selectedType = "Kilogram";
+
+  String _selectedType = "Kilogram";
   var type = {'Kilogram': 'KG', 'Gram': 'G'};
 
   List _types = [];
@@ -31,7 +32,7 @@ class _AddProductState extends State<AddProduct> {
     });
   }
 
-     String _selectedProduct = "Production";
+  String _selectedProduct = "Production";
   var product = {'Production': 'P', 'Temporary(S)': 'TP'};
 
   List _products = [];
@@ -40,7 +41,6 @@ class _AddProductState extends State<AddProduct> {
       _products.add(key);
     });
   }
-
 
   @override
   void initState() {
@@ -66,11 +66,8 @@ class _AddProductState extends State<AddProduct> {
         elevation: 0,
         title: Text(
           "Add Production",
-          style: TextStyle(
-              fontFamily: FontPoppins,
-              fontSize: 20,
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
+          style: GoogleFonts.sourceSansPro(
+              fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
@@ -91,106 +88,123 @@ class _AddProductState extends State<AddProduct> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                           Container(
-                            padding: EdgeInsets.only(top: 25, left: 20),
-                             child: SizedBox(
-                              height: 25,
-                              child: Text(
-                                "Factory Name",
-                                style: TextStyle(
-                                  fontFamily: FontPoppins,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
+                        Container(
+                          padding: EdgeInsets.only(top: 25, left: 20),
+                          child: SizedBox(
+                            height: 25,
+                            child: Text(
+                              "Factory Name",
+                              style: TextStyle(
+                                fontFamily: FontPoppins,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
                               ),
                             ),
-                           ),
+                          ),
+                        ),
                         DropdownButton(
                           hint: Text("Select"),
                           padding: EdgeInsets.only(left: 20),
                           borderRadius: BorderRadius.circular(10),
-                            value: _selectedFactory,
-                            
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selectedFactory="$newValue";
-                              });
-                            },
-                            items: _factory.map((factory) {
-                              return DropdownMenuItem(
-                                child: Text(factory),
-                                value: factory,
-                              );
-                            }).toList(),
+                          value: _selectedFactory,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedFactory = "$newValue";
+                            });
+                          },
+                          items: _factory.map((factory) {
+                            return DropdownMenuItem(
+                              child: Text(factory),
+                              value: factory,
+                            );
+                          }).toList(),
                         ),
                         Container(
                           padding: EdgeInsets.only(left: 20, top: 25),
                           child: SizedBox(
-                                height: 25,
-                                child: Text(
-                                  "Type Weight",
-                                  style: TextStyle(
-                                    fontFamily: FontPoppins,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                             ),
-                        ),
-                         DropdownButton(
-                          padding: EdgeInsets.only(left: 20),
-                          borderRadius: BorderRadius.circular(10),
-                            value: _selectedType,
-                            
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selectedType="$newValue";
-                              });
-                            },
-                            items: _types.map((type) {
-                              return DropdownMenuItem(
-                                child: Text(type),
-                                value: type,
-                              );
-                            }).toList(),
-                        ),
-                        
-                        Container(
-                          padding: EdgeInsets.only(left: 20, top: 25),
-                          child: SizedBox(
-                                height: 25,
-                                child: Text(
-                                  "Production Type",
-                                  style: TextStyle(
-                                    fontFamily: FontPoppins,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
+                            height: 25,
+                            child: Text(
+                              "Type Weight",
+                              style: TextStyle(
+                                fontFamily: FontPoppins,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
                               ),
+                            ),
+                          ),
                         ),
                         DropdownButton(
-                          padding: EdgeInsets.only(left: 20,),
+                          padding: EdgeInsets.only(left: 20),
                           borderRadius: BorderRadius.circular(10),
-                            value: _selectedProduct,
-                            
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selectedProduct="$newValue";
-                              });
-                            },
-                            items: _products.map((product) {
-                              return DropdownMenuItem(
-                                child: Text(product),
-                                value: product,
-                              );
-                            }).toList(),
+                          value: _selectedType,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedType = "$newValue";
+                            });
+                          },
+                          items: _types.map((type) {
+                            return DropdownMenuItem(
+                              child: Text(type),
+                              value: type,
+                            );
+                          }).toList(),
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color(0xFFE9E9E9),
-
+                        Container(
+                          padding: EdgeInsets.only(left: 20, top: 25),
+                          child: SizedBox(
+                            height: 25,
+                            child: Text(
+                              "Production Type",
+                              style: TextStyle(
+                                fontFamily: FontPoppins,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DropdownButton(
+                          padding: EdgeInsets.only(
+                            left: 20,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          value: _selectedProduct,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedProduct = "$newValue";
+                            });
+                          },
+                          items: _products.map((product) {
+                            return DropdownMenuItem(
+                              child: Text(product),
+                              value: product,
+                            );
+                          }).toList(),
+                        ),
+                        SizedBox(height: 25,),
+                        Container(
+                          padding: EdgeInsets.only(left: 20,),
+                          child: Text(
+                            "Total",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(0xFFE9E9E9),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:   BorderRadius.circular(30),
+                                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)
+                              )
+                            ),
                           ),
                         )
                       ],
@@ -203,4 +217,3 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 }
-

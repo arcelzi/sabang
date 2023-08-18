@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddNira extends StatefulWidget {
   const AddNira({super.key});
@@ -28,8 +29,7 @@ class _AddNiraState extends State<AddNira> {
         elevation: 0,
         title: Text(
           "Input Nira",
-          style: TextStyle(
-              fontFamily: FontPoppins,
+          style: GoogleFonts.sourceSansPro(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black),

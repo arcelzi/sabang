@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Garden extends StatefulWidget {
   const Garden({super.key});
@@ -11,6 +12,7 @@ class Garden extends StatefulWidget {
 class _GardenState extends State<Garden> {
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
+  String selectValue = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +30,8 @@ class _GardenState extends State<Garden> {
         elevation: 0,
         title: Text(
           "Garden Control",
-          style: TextStyle(
-              fontFamily: FontPoppins,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+          style: GoogleFonts.sourceSansPro(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       body: Column(
@@ -96,7 +95,34 @@ class _GardenState extends State<Garden> {
                         SizedBox(
                           height: 9,
                         ),
-                        buildQuest3(),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: RadioListTile(
+                                activeColor: Color(0xFF78937A),
+                                  title: Text("Yes"),
+                                  value: 'yes',
+                                  groupValue: selectValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectValue = value.toString();
+                                    });
+                                  }),
+                            ),
+                            Expanded(
+                              child: RadioListTile(
+                                activeColor: Color(0xFF78937A),
+                                  title: Text("No"),
+                                  value: 'no',
+                                  groupValue: selectValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectValue = value.toString();
+                                    });
+                                  }),
+                            )
+                          ],
+                        ),
                         Padding(
                             padding: EdgeInsets.only(top: 20),
                             child: Text("Tambah Foto",
@@ -123,7 +149,7 @@ class _GardenState extends State<Garden> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0E86F5),
+                  backgroundColor: Color(0xFFE0ADA2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -193,56 +219,6 @@ TextFormField buildQuest2() {
       }
       return null;
     },
-  );
-}
-
-Row buildQuest3() {
-  return Row(
-    children: [
-      Expanded(
-        child: TextFormField(
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 14,
-            color: Color(0xFFA9A9A9),
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE9E9E9),
-            hintText: "Ya",
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-          ),
-        ),
-      ),
-      SizedBox(
-        width: 28,
-      ),
-      Expanded(
-        child: TextFormField(
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 14,
-            color: Color(0xFFA9A9A9),
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE9E9E9),
-            hintText: "Tidak",
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-          ),
-        ),
-      ),
-    ],
   );
 }
 

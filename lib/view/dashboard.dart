@@ -145,7 +145,7 @@ class _DashboardState extends State<Dashboard>{
                               'Production',
                               style: GoogleFonts.sourceSansPro(
                                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.w300),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -192,7 +192,7 @@ class _DashboardState extends State<Dashboard>{
                               children: [
                                 Icon(
                                   item["icon"],
-                                  size: 35,
+                                  size: 30,
                                   color: Colors.white,
                                 ),
                                 SizedBox(height: 17,),
