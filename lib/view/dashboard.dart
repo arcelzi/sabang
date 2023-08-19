@@ -8,6 +8,7 @@ import 'package:sabang/menu/production.dart';
 import 'package:sabang/menu/purchase.dart';
 import 'package:sabang/menu/tappers.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sabang/view/profile.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -81,8 +82,13 @@ class _DashboardState extends State<Dashboard>{
                   ],
                 ),
                 CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/images/people.png'),
+                  backgroundColor: Color(0xFFE0ADA2),
+                  child: IconButton(
+                    icon: Icon(FontAwesomeIcons.user, color: Colors.white,),
+                    onPressed: () {
+                      Navigator.push(context,MaterialPageRoute(builder: ((context) => Profile())));
+                    },
+                  ),
                 )
               ],
             ),

@@ -17,17 +17,6 @@ class _PurchaseState extends State<Purchase> {
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FB),
       appBar: AppBar(
-        actions: [
-          Container(
-            width: 50,
-            child: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  FontAwesomeIcons.cartShopping,
-                  color: Colors.black,
-                )),
-          )
-        ],
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
