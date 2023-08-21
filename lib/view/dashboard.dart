@@ -8,7 +8,7 @@ import 'package:sabang/menu/production.dart';
 import 'package:sabang/menu/purchase.dart';
 import 'package:sabang/menu/tappers.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sabang/view/profile.dart';
+import 'package:sabang/menu/profile/profile.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
