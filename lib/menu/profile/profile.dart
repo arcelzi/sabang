@@ -96,20 +96,6 @@ class _ProfileState extends State<Profile> {
                   onPress: () {},
                 ),
                 ProfileMenu(
-                    title: "Billing Details",
-                    icon: FontAwesomeIcons.wallet,
-                    onPress: () {}),
-                ProfileMenu(
-                    title: "User Management",
-                    icon: FontAwesomeIcons.userCheck,
-                    onPress: () {}),
-                    const Divider(color: Color(0xFFF5F6FB),),
-                    const SizedBox(height: 10,),
-                ProfileMenu(
-                    title: "Information",
-                    icon: FontAwesomeIcons.info,
-                    onPress: () {}),
-                ProfileMenu(
                     title: "Logout",
                     icon: FontAwesomeIcons.rightFromBracket,
                     textColor: Colors.redAccent,

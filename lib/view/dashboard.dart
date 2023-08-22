@@ -26,7 +26,7 @@ class _DashboardState extends State<Dashboard>{
     List menuList = [
     {
       "icon": FontAwesomeIcons.box,
-      "title": "Add Nira",
+      "title": "Nira",
       "color": Color(0xFF78937A)
     },
     {
