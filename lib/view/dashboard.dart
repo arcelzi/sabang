@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sabang/menu/addnira.dart';
 import 'package:sabang/menu/gardencontrol.dart';
-import 'package:sabang/menu/payment.dart';
-import 'package:sabang/menu/production.dart';
+import 'package:sabang/menu/nira.dart';
 import 'package:sabang/menu/purchase.dart';
-import 'package:sabang/menu/tappers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
 
@@ -27,21 +24,6 @@ class _DashboardState extends State<Dashboard>{
     {
       "icon": FontAwesomeIcons.box,
       "title": "Nira",
-      "color": Color(0xFF78937A)
-    },
-    {
-      "icon": FontAwesomeIcons.wallet,
-      "title": "Payment",
-      "color": Color(0xFF78937A)
-    },
-    {
-      "icon": FontAwesomeIcons.boxOpen,
-      "title": "Production",
-      "color": Color(0xFF78937A)
-    },
-    {
-      "icon": FontAwesomeIcons.users,
-      "title": "Tappers",
       "color": Color(0xFF78937A)
     },
     {
@@ -175,21 +157,15 @@ class _DashboardState extends State<Dashboard>{
                         return InkWell(
                           onTap: (){
                             if (index == 0) 
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> AddNira()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Nira()));
                             if (index == 1)
-                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Payment())));
-                            if (index == 2)
-                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Production())));
-                            if (index == 3)
-                            Navigator.push(context,MaterialPageRoute(builder: ((context) => Tappers())));
-                            if (index == 4)
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => Garden())));
-                            if (index == 5)
+                            if (index == 2)
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => Purchase())));
                           },
                           child: Container(
                             height: 129.0,
-                            width: 159.0,
+                            width: 338.0,
                             decoration: BoxDecoration(
                                 color: item["color"],
                                 borderRadius: BorderRadius.circular(15)),
@@ -198,7 +174,7 @@ class _DashboardState extends State<Dashboard>{
                               children: [
                                 Icon(
                                   item["icon"],
-                                  size: 30,
+                                  size: 60,
                                   color: Colors.white,
                                 ),
                                 SizedBox(height: 17,),

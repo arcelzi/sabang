@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sabang/menu/addproduct.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sabang/menu/addnira.dart';
 
-class Production extends StatefulWidget {
-  const Production({super.key});
+class Nira extends StatefulWidget {
+  const Nira({super.key});
 
   @override
-  State<Production> createState() => _ProductionState();
+  State<Nira> createState() => _NiraState();
 }
 
-class _ProductionState extends State<Production> {
+class _NiraState extends State<Nira> {
   final String FontPoppins = 'FontPoppins';
   @override
   Widget build(BuildContext context) {
@@ -29,11 +29,9 @@ class _ProductionState extends State<Production> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Production",
+          "Nira",
           style: GoogleFonts.sourceSansPro(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       body: Padding(
@@ -52,7 +50,7 @@ class _ProductionState extends State<Production> {
                 ),
                 filled: true,
                 fillColor: Color(0xFFE9E9E9),
-                hintText: 'Search Production',
+                hintText: 'Search Nira',
                 hintStyle: TextStyle(
                     fontFamily: FontPoppins,
                     fontSize: 14,
@@ -70,14 +68,15 @@ class _ProductionState extends State<Production> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: ((context) => AddProduct())));
-          },
-          backgroundColor: Color(0xFFE5E1E1),
-          child: Icon(FontAwesomeIcons.database),
-          tooltip: 'Add Product',
-          foregroundColor: Color(0xFFE0ADA2)),
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: ((context) => AddNira())));
+        },
+        backgroundColor: Color(0xFFE5E1E1),
+        child: Icon(FontAwesomeIcons.plus),
+        tooltip: 'Add Nira',
+        foregroundColor: Color(0xFFE0ADA2),
+      ),
     );
   }
 }
