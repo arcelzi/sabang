@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sabang/menu/gardencontrol.dart';
 import 'package:sabang/menu/nira.dart';
-import 'package:sabang/menu/purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
+import 'package:sabang/menu/purchase.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -159,7 +159,7 @@ class _DashboardState extends State<Dashboard>{
                             if (index == 0) 
                             Navigator.push(context, MaterialPageRoute(builder: (context)=> Nira()));
                             if (index == 1)
-                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Garden())));
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => GardenControl())));
                             if (index == 2)
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => Purchase())));
                           },
