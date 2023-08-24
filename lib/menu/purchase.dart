@@ -48,7 +48,7 @@ class _PurchaseState extends State<Purchase> {
                 ),
                 filled: true,
                 fillColor: Color(0xFFE9E9E9),
-                hintText: 'Search Purchase',
+                hintText: 'Search Nira',
                 hintStyle: TextStyle(
                     fontFamily: FontPoppins,
                     fontSize: 14,
@@ -68,11 +68,11 @@ class _PurchaseState extends State<Purchase> {
          floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: ((context) => AddPurchase())));
+              context, MaterialPageRoute(builder: ((context) => AddPurchase ())));
         },
         backgroundColor: Color(0xFFE5E1E1),
         child: Icon(FontAwesomeIcons.plus),
-        tooltip: 'Add Purchase',
+        tooltip: 'Add Nira',
         foregroundColor: Color(0xFFE0ADA2),
          ),
     );
