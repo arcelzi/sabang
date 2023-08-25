@@ -43,7 +43,7 @@ class _ProfileState extends State<Profile> {
                     SizedBox(
                       width: 120,
                       height: 120,
-                      child: Image.asset('../assets/images/people.png'),
+                      child: Image.asset('assets/images/people.png'),
                     ),
                     Positioned(
                       bottom: 0,

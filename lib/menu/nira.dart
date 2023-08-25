@@ -96,7 +96,7 @@ class _NiraState extends State<Nira> {
                   itemBuilder: (context, index) => Card(
                         key: ValueKey(_foundNira[index]["id"]),
                         color: Color(0xFF78937A),
-                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        margin: EdgeInsets.only(top: 10),
                         child: ListTile(
                           leading: Text(
                             _foundNira[index]["id"].toString(),

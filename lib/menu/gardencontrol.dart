@@ -12,71 +12,78 @@ class GardenControl extends StatefulWidget {
 
 class _GardenControlState extends State<GardenControl> {
   final String FontPoppins = 'FontPoppins';
+  final List<gardencontrol> garden = [
+    gardencontrol(
+        question1: "Perkebunan sehat",
+        question2: "question2",
+        question3: "Yes",
+        foto: 'assets/images/aren.png')
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6FB),
-      appBar: AppBar(
-        title: Text(
-          "Garden Control",
-          style: GoogleFonts.sourceSansPro(
-              fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              FontAwesomeIcons.angleLeft,
-              color: Colors.black,
-            )),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(top: 56, left: 16, right: 16),
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 100),
-          height: 52,
-          width: 309,
-          child: GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: TextFormField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  color: Color(0xFFA9A9A9),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xFFE9E9E9),
-                  hintText: 'Search Garden',
-                  hintStyle: TextStyle(
-                    fontFamily: FontPoppins,
-                    fontSize: 14,
-                    color: Color(0xFFA9A9A9),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(color: Color(0xFFE9E9E9), width: 0)
-                  )
-              ),
-            ),
+        backgroundColor: Color(0xFFF5F6FB),
+        appBar: AppBar(
+          title: Text(
+            "Garden Control",
+            style: GoogleFonts.sourceSansPro(
+                fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
           ),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                FontAwesomeIcons.angleLeft,
+                color: Colors.black,
+              )),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
         ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: ((context) => AddGarden())));
-        },
-        backgroundColor: Color(0xFFE5E1E1),
-        child: Icon(FontAwesomeIcons.plus),
-        foregroundColor: Color(0xFFE0ADA2),
-        ),
-    );
+        body: ListView(
+          children: garden.map((result) {
+            return Card(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: Image(image: AssetImage(result.foto)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 70,),
+                          Text(result.question1),
+                          Text(result.question2),
+                          Text(result.question3),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ));
   }
+}
+
+class gardencontrol {
+  final String question1;
+  final String question2;
+  final String question3;
+  final String foto;
+
+  gardencontrol(
+      {required this.question1,
+      required this.question2,
+      required this.question3,
+      required this.foto});
 }

@@ -40,7 +40,7 @@ class _AddPurchaseState extends State<AddPurchase> {
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Container(
               width: 350,
-              height: 530,
+              height: 550,
               margin: EdgeInsets.symmetric(horizontal: 80),
               padding: EdgeInsets.only(top: 5, left: 16, right: 16),
               decoration: BoxDecoration(
