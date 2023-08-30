@@ -36,9 +36,12 @@ class _PurchaseState extends State<Purchase> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: ((context) => AddPurchase())));
                 },
-                icon: Icon(FontAwesomeIcons.cartPlus, color: Colors.black, size: 25, ),
+                icon: Icon(
+                  FontAwesomeIcons.cartPlus,
+                  color: Colors.black,
+                  size: 25,
+                ),
                 tooltip: "Add Purchase",
-                
               ),
             )
           ],
@@ -62,25 +65,48 @@ class _PurchaseState extends State<Purchase> {
         body: ListView(
           children: purchases.map((pu) {
             return Card(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(pu.tappers),
-                        Text('PH : ' + pu.ph.toString()),
-                        Text('Brix : ' + pu.brix.toString()),
-                        Text('Volume : ' + pu.volume.toString()),
-                        Text('Harga : Rp.' + pu.harga.toString()),
-                        Text(pu.date.toString())
-                      ],
-                    )
-                  ],
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color(0xFF78937A),
+                    borderRadius: BorderRadius.circular(15)),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            pu.tappers,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'PH : ' + pu.ph.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'Brix : ' + pu.brix.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'Volume : ' + pu.volume.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'Harga : Rp.' + pu.harga.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            pu.date.toString(),
+                            style: TextStyle(color: Colors.white),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

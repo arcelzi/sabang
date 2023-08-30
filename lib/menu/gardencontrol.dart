@@ -40,6 +40,22 @@ class _GardenControlState extends State<GardenControl> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
+          actions: [
+            Container(
+              width: 80,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: ((context) => AddGarden())));
+                },
+                icon: Icon(
+                  FontAwesomeIcons.plus,
+                  color: Colors.black,
+                  size: 25,
+                ),
+                tooltip: "Add Garden",
+              ),
+            )
+          ],
         ),
         body: ListView(
           children: garden.map((result) {
@@ -57,12 +73,14 @@ class _GardenControlState extends State<GardenControl> {
                     Container(
                       padding: EdgeInsets.only(left: 15),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 70,),
-                          Text(result.question1),
-                          Text(result.question2),
-                          Text(result.question3),
+                          SizedBox(
+                            height: 70,
+                          ),
+                          Text('Question 1 : ' + result.question1),
+                          Text('Question 2 : ' + result.question2),
+                          Text('Question 3 : ' +result.question3),
                         ],
                       ),
                     )
