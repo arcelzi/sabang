@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sabang/view/dashboard.dart';
+import 'package:http/http.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -8,8 +11,30 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final String FontPoppins = 'FontPoppins';
-  
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController(); 
 
+  
+  Future<void> login() async {
+    if (passwordController.text.isNotEmpty && usernameController.text.isNotEmpty) {
+      var response = await post(Uri.http('192.168.102.137:3001', 'auth/login'),
+      body: ({
+        'user': usernameController.text,
+        'password': passwordController.text
+      })
+      );
+      if(response.statusCode == 200) {
+        Navigator.push(context, MaterialPageRoute(builder: ((context) => Dashboard())));
+
+      } else {
+        ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Invalid Credentials")));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Black field not allowed")));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -42,7 +67,8 @@ class _LoginState extends State<Login> {
           Padding(
             //padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 0, bottom: 0),
             padding: EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
+            child: TextFormField(
+              controller: usernameController,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25)),
@@ -61,7 +87,8 @@ class _LoginState extends State<Login> {
             padding: const EdgeInsets.only(
                 left: 15.0, right: 15.0, top: 0, bottom: 0),
             //padding: EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
+            child: TextFormField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -86,7 +113,7 @@ class _LoginState extends State<Login> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF78937A)),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+                login();
               },
               child: Text("Sign in",
                   style: TextStyle(
@@ -105,4 +132,8 @@ class _LoginState extends State<Login> {
     
 
   }
+}
+
+void login() {
+
 }
