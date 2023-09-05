@@ -6,6 +6,7 @@ import 'package:sabang/menu/nira.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
 import 'package:sabang/menu/purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -37,6 +38,16 @@ class _DashboardState extends State<Dashboard>{
       "color": Color(0xFF78937A)
     },
   ];
+  String token = "";
+  void initState() {
+    super.initState();
+    getCred();
+  }
+  
+  void getCred() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    token =pref.getString("token")!;
+  }
 
   @override
   Widget build(BuildContext context) {

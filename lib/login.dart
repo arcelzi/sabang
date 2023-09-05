@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:sabang/view/dashboard.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -11,30 +12,22 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final String FontPoppins = 'FontPoppins';
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController(); 
+  var usernameController = TextEditingController();
+  var passwordController = TextEditingController(); 
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+  }
 
-  
-  Future<void> login() async {
-    if (passwordController.text.isNotEmpty && usernameController.text.isNotEmpty) {
-      var response = await post(Uri.http('192.168.102.137:3001', 'auth/login'),
-      body: ({
-        'user': usernameController.text,
-        'password': passwordController.text
-      })
-      );
-      if(response.statusCode == 200) {
-        Navigator.push(context, MaterialPageRoute(builder: ((context) => Dashboard())));
-
-      } else {
-        ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Invalid Credentials")));
-      }
-    } else {
-      ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Black field not allowed")));
+  void checkLogin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? val = pref.getString("login");
+    if (val != null) {
+      Navigator.push(context, MaterialPageRoute(builder: ((context) => Dashboard())));
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -132,8 +125,35 @@ class _LoginState extends State<Login> {
     
 
   }
+  void login() async {
+  if (passwordController.text.isNotEmpty && usernameController.text.isNotEmpty) {
+    var response = await http.post(Uri.parse("http://192.168.102.137:3001/auth/login"),
+     body: ({
+      "username": usernameController.text,
+      "password": passwordController.text
+    }));
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      //print("Login Token"+ body["token"]);
+        ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Token : ${body['token']}")));
+
+          pageRoute(body['token']);
+    } else {
+      ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text("Invalid Credentials")));
+    }
+   
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Blank Value Found")));
+    } 
+  }
+  void pageRoute (String token)
+  async {
+    //Store Value or Token Inside Shared Preferences
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          await pref.setString("login", token);
+          Navigator.push(context, MaterialPageRoute(builder: ((context) => Dashboard())));
+  }
 }
 
-void login() {
-
-}
