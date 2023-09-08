@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sabang/menu/gardencontrol.dart';
-import 'package:sabang/menu/nira.dart';
+import 'package:sabang/pages/gardencontrol_page.dart';
+import 'package:sabang/pages/nira_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
-import 'package:sabang/menu/purchase.dart';
+import 'package:sabang/pages/purchase_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -168,11 +169,11 @@ class _DashboardState extends State<Dashboard>{
                         return InkWell(
                           onTap: (){
                             if (index == 0) 
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Nira()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> NiraPage()));
                             if (index == 1)
-                            Navigator.push(context, MaterialPageRoute(builder: ((context) => GardenControl())));
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => GardenControlPage())));
                             if (index == 2)
-                            Navigator.push(context, MaterialPageRoute(builder: ((context) => Purchase())));
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => PurchasePage())));
                           },
                           child: Container(
                             height: 129.0,

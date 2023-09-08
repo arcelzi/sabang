@@ -3,14 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/addgardencontrol.dart';
 
-class GardenControl extends StatefulWidget {
-  const GardenControl({super.key});
+class GardenControlPage extends StatefulWidget {
+  const GardenControlPage({super.key});
 
   @override
-  State<GardenControl> createState() => _GardenControlState();
+  State<GardenControlPage> createState() => _GardenControlPageState();
 }
 
-class _GardenControlState extends State<GardenControl> {
+class _GardenControlPageState extends State<GardenControlPage> {
   final String FontPoppins = 'FontPoppins';
   final List<gardencontrol> garden = [
     gardencontrol(

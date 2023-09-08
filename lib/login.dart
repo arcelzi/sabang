@@ -136,12 +136,12 @@ class _LoginState extends State<Login> {
       final body = jsonDecode(response.body);
       //print("Login Token"+ body["token"]);
         ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Token : ${body['token']}")));
+          .showSnackBar(SnackBar(content: Text("Login Successfully")));
 
           pageRoute(body['token']);
     } else {
       ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text("Invalid Credentials")));
+      .showSnackBar(SnackBar(content: Text("Username/Password wrong, try again")));
     }
    
   } else {
@@ -152,7 +152,7 @@ class _LoginState extends State<Login> {
   async {
     //Store Value or Token Inside Shared Preferences
           SharedPreferences pref = await SharedPreferences.getInstance();
-          await pref.setString("login", token);
+          await pref.setString("login",'Success');
           Navigator.push(context, MaterialPageRoute(builder: ((context) => Dashboard())));
   }
 }

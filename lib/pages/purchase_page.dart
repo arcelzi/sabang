@@ -5,7 +5,7 @@ import 'package:sabang/menu/addpurchase.dart';
 import '../menu/list/listpurchase.dart';
 
 class PurchasePage extends StatefulWidget {
-  const PurchasePage({super.key});
+  const PurchasePage ({super.key});
 
   @override
   State<PurchasePage> createState() => _PurchasePageState();

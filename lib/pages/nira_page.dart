@@ -3,14 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/addnira.dart';
 
-class Nira extends StatefulWidget {
-  const Nira({super.key});
+class NiraPage extends StatefulWidget {
+  const NiraPage({super.key});
 
   @override
-  State<Nira> createState() => _NiraState();
+  State<NiraPage> createState() => _NiraPageState();
 }
 
-class _NiraState extends State<Nira> {
+class _NiraPageState extends State<NiraPage> {
   final String FontPoppins = 'FontPoppins';
   List<Map<String, dynamic>> _allNira = [
     {"id": 1, "tappers": "Sabang", "volume": 10}
