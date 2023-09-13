@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sabang/login.dart';
 import 'package:sabang/pages/gardencontrol_page.dart';
 import 'package:sabang/pages/nira_page.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,16 +40,20 @@ class _DashboardState extends State<Dashboard>{
       "color": Color(0xFF78937A)
     },
   ];
-  String token = "";
-  void initState() {
-    super.initState();
-    getCred();
+  String username = "";
+  getPref() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var islogin = pref.getBool("is_login");
+    if (islogin != null && islogin == true) {
+      setState(() {
+        username = pref.getString("username")!;
+      });
+    } else {
+      Navigator.of(context,rootNavigator: true).pop();
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: ((context) => Login())), (route) => false);
+    }
   }
   
-  void getCred() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    token =pref.getString("token")!;
-  }
 
   @override
   Widget build(BuildContext context) {

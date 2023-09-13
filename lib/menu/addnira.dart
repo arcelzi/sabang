@@ -12,7 +12,6 @@ class AddNira extends StatefulWidget {
 class _AddNiraState extends State<AddNira> {
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FB),
@@ -79,7 +78,8 @@ class _AddNiraState extends State<AddNira> {
                         SizedBox(
                           height: 6,
                         ),
-                        buildPh(),
+                        buildPh(
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 20, top: 16),
                           child: Text(
@@ -136,8 +136,13 @@ class _AddNiraState extends State<AddNira> {
   }
 }
 
+var _phController = TextEditingController();
+var _brixController = TextEditingController();
+var _volumeController = TextEditingController();
+
 TextFormField buildPh() {
   return TextFormField(
+    controller: _phController,
     keyboardType: TextInputType.number,
     textAlign: TextAlign.start,
     style: TextStyle(
@@ -166,6 +171,7 @@ TextFormField buildPh() {
 
 TextFormField buildKadarField() {
   return TextFormField(
+    controller: _brixController,
     keyboardType: TextInputType.number,
     textAlign: TextAlign.start,
     style: TextStyle(fontSize: 14),
@@ -194,6 +200,7 @@ TextFormField buildKadarField() {
 
 TextFormField buildLiterField() {
   return TextFormField(
+    controller: _volumeController,
     keyboardType: TextInputType.number,
     textAlign: TextAlign.start,
     style: TextStyle(fontSize: 14),

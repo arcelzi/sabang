@@ -12,7 +12,16 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool circular = true;
   @override
+  void initState() {
+    super.initState();
+
+    fecthData();
+  }
+  void fecthData() async {
+
+  }
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xFFF5F6FB),
@@ -51,8 +60,14 @@ class _ProfileState extends State<Profile> {
                       child: Container(
                         width: 35,
                         height: 35,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: Color(0xFFE0ADA2) ),
-                        child: const Icon(FontAwesomeIcons.pencil, color: Colors.black, size: 18,),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: Color(0xFFE0ADA2)),
+                        child: const Icon(
+                          FontAwesomeIcons.pencil,
+                          color: Colors.black,
+                          size: 18,
+                        ),
                       ),
                     )
                   ],
@@ -73,7 +88,10 @@ class _ProfileState extends State<Profile> {
                   width: 200,
                   child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: ((context) => UpdateProfile())));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => UpdateProfile())));
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFFE0ADA2),
@@ -86,7 +104,9 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Divider(color: Color(0xFFF5F6FB),),
+                const Divider(
+                  color: Color(0xFFF5F6FB),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -100,7 +120,26 @@ class _ProfileState extends State<Profile> {
                     icon: FontAwesomeIcons.rightFromBracket,
                     textColor: Colors.redAccent,
                     endIcon: false,
-                    onPress: () {Navigator.push(context, MaterialPageRoute(builder: ((context) => Login())));})
+                    onPress: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                content: Row(
+                              children: [
+                                Text("Are you Sure?"),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: ((context) => Login())), (route) => false);
+                                    }, child: const Text("Yes")),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }, child: const Text("No"))
+                              ],
+                            ));
+                          });
+                    })
               ],
             ),
           ),
