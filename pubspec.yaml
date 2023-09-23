@@ -28,27 +28,23 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  build_runner: ^2.4.6
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
   font_awesome_flutter: ^10.5.0
   http: ^1.1.0
+  json_annotation: ^4.8.1
+  json_serializable: ^6.7.1
   shared_preferences: ^2.2.1
-  flutter_form_builder: ^9.1.0
-
-
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  
-  google_fonts: ^5.1.0
 
   flutter_native_splash: ^2.3.1
+  flutter_test:
+    sdk: flutter
+
+  google_fonts: ^5.1.0
 
 flutter_native_splash:
   color: "#ffffff"
@@ -63,7 +59,6 @@ flutter_native_splash:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -76,13 +71,10 @@ flutter:
   assets:
     - assets/images/
   #   - images/a_dot_ham.jpeg
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

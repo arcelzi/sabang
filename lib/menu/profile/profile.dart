@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/login.dart';
 import 'package:sabang/menu/profile/updateprofile.dart';
+import 'package:sabang/view/dashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,16 +14,20 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  bool circular = true;
+  String token = "";
   @override
   void initState() {
     super.initState();
-
-    fecthData();
+    getCred();
   }
-  void fecthData() async {
 
+  void getCred() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+    token = pref.getString("login")??"";
+    });
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xFFF5F6FB),
@@ -129,13 +135,22 @@ class _ProfileState extends State<Profile> {
                               children: [
                                 Text("Are you Sure?"),
                                 TextButton(
-                                    onPressed: () {
-                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: ((context) => Login())), (route) => false);
-                                    }, child: const Text("Yes")),
+                                    onPressed: () async {
+                                      SharedPreferences pref =
+                                          await SharedPreferences.getInstance();
+                                      await pref.clear();
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                            builder: (context) => Login(),
+                                          ),
+                                          (route) => false);
+                                    },
+                                    child: const Text("Yes")),
                                 TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);
-                                    }, child: const Text("No"))
+                                    },
+                                    child: const Text("No"))
                               ],
                             ));
                           });

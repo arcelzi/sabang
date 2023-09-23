@@ -13,16 +13,8 @@ class PurchasePage extends StatefulWidget {
 
 class _PurchasePageState extends State<PurchasePage> {
   final String FontPoppins = 'FontPoppins';
-  final List<Purchases> purchases = [
-    Purchases(
-        id: 1,
-        tappers: 'Sabang',
-        ph: 2,
-        brix: 3,
-        volume: 5,
-        harga: 3000,
-        date: DateTime.now())
-  ];
+  final List<Purchases> purchases = [];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

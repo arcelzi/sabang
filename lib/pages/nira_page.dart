@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/addnira.dart';
+import 'package:http/http.dart' as http;
+import 'package:sabang/models/nira.dart';
+
 
 class NiraPage extends StatefulWidget {
   const NiraPage({super.key});
@@ -12,29 +18,37 @@ class NiraPage extends StatefulWidget {
 
 class _NiraPageState extends State<NiraPage> {
   final String FontPoppins = 'FontPoppins';
-  List<Map<String, dynamic>> _allNira = [
-    {"id": 1, "tappers": "Sabang", "volume": 10}
-  ];
-  List<Map<String, dynamic>> _foundNira = [];
-  @override
-  initState() {
-    _foundNira = _allNira;
-    super.initState();
-  }
-  void _runFilter(String enteredKeyword) {
-    List<Map<String, dynamic>> result = [];
-    if (enteredKeyword.isEmpty) {
-      result = _allNira;
-    } else {
-      result = _allNira
-      .where((nira) => nira['tappers'].toLowerCase().contains(enteredKeyword.toLowerCase()))
-      .toList();
-    }
+  List<Nira> niraList = [];
 
+ Future<List<Nira?>> getNira() async {
+  Uri api = Uri.parse("http://192.168.102.137:3001/purchases");
+  var response = await http.get(api);
+  List<Nira> nira = [];
+
+  print(response.statusCode);
+  if(response.statusCode == 200) {
+    var result = json.decode(response.body);
+    for (var item in result){
+      print(item);
+      nira.add(Nira.fromJson(item));
+    }
     setState(() {
-      _foundNira = result;
+      
     });
+    return nira;
+  } else {
+    return nira;
   }
+  }
+    
+ 
+ @override
+ void initState() {
+  getNira();
+  super.initState();
+ }
+ 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +79,7 @@ class _NiraPageState extends State<NiraPage> {
               height: 20,
             ),
             TextField(
-              onChanged: (value) => _runFilter(value),
+              onChanged: (value) => (),
               decoration: InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFE9E9E9),
@@ -91,31 +105,41 @@ class _NiraPageState extends State<NiraPage> {
               height: 20,
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: _foundNira.length,
-                  itemBuilder: (context, index) => Card(
-                        key: ValueKey(_foundNira[index]["id"]),
-                        color: Color(0xFF78937A),
-                        margin: EdgeInsets.only(top: 10),
-                        child: ListTile(
-                          leading: Text(
-                            _foundNira[index]["id"].toString(),
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          title: Text(_foundNira[index]['tappers']),
-                          titleTextStyle: TextStyle(color: Colors.white),
-                          subtitle: Text(
-                              '${_foundNira[index]["volume"].toString()} Liter'),
-                          textColor: Colors.white,
-                        ),
-                      )),
-            ),
+              child: FutureBuilder(
+                future: getNira(),
+                builder: (context, snapshot){
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    if (snapshot.hasData) {
+                      return ListView.builder(itemBuilder: (context, index){
+                        return Card(
+                          child: Padding(padding: EdgeInsets.all(8),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(niraList[index].ph.toString()),
+                              Text(niraList[index].sugarlevel.toString()),
+                              Text(niraList[index].volume.toString())
+                            ],
+                          ),),
+                        );
+                      },
+                      itemCount: niraList.length,);
+                    } else {
+                      return Center(child: Text("TIDAK ADA NIRA"),);
+                    }
+                  }
+                }),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: ((context) => AddNira())));
+          Navigator.push(
+              context, MaterialPageRoute(builder: ((context) => AddNira())));
         },
         backgroundColor: Color(0xFFE5E1E1),
         child: Icon(FontAwesomeIcons.plus),
@@ -124,3 +148,4 @@ class _NiraPageState extends State<NiraPage> {
     );
   }
 }
+

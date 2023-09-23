@@ -40,18 +40,18 @@ class _DashboardState extends State<Dashboard>{
       "color": Color(0xFF78937A)
     },
   ];
-  String username = "";
-  getPref() async {
+  String token = "";
+  @override
+  void initState() {
+    super.initState();
+    getCred();
+  }
+
+  void getCred() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var islogin = pref.getBool("is_login");
-    if (islogin != null && islogin == true) {
-      setState(() {
-        username = pref.getString("username")!;
-      });
-    } else {
-      Navigator.of(context,rootNavigator: true).pop();
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: ((context) => Login())), (route) => false);
-    }
+    setState(() {
+    token = pref.getString("login")??"";
+    });
   }
   
 
