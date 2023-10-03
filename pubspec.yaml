@@ -36,10 +36,10 @@ dependencies:
   http: ^1.1.0
   json_annotation: ^4.8.1
   json_serializable: ^6.7.1
+  location: ^5.0.3
   shared_preferences: ^2.2.1
 
 dev_dependencies:
-
   flutter_native_splash: ^2.3.1
   flutter_test:
     sdk: flutter

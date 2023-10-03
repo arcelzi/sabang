@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'nira.dart';
+part of 'purchases.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Nira _$NiraFromJson(Map<String, dynamic> json) => Nira(
+Purchases _$PurchasesFromJson(Map<String, dynamic> json) => Purchases(
       id: json['id'] as int?,
       penyadapld: json['penyadapld'] as int?,
       purchaserld: json['purchaserld'] as int?,
-      ph: json['ph'] as num?,
-      sugarLevel: json['sugarLevel'] as num?,
-      volume: json['volume'] as num?,
-      lat: json['lat'] as num?,
-      lng: json['lng'] as num?,
-      amount: json['amount'] as num?,
+      ph: json['ph'] as String?,
+      sugarLevel: json['sugarLevel'] as String?,
+      volume: json['volume'] as String?,
+      lat: json['lat'] as String?,
+      lng: json['lng'] as String?,
+      amount: json['amount'] as String?,
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
@@ -30,7 +30,7 @@ Nira _$NiraFromJson(Map<String, dynamic> json) => Nira(
           : DateTime.parse(json['auditedAt'] as String),
     );
 
-Map<String, dynamic> _$NiraToJson(Nira instance) => <String, dynamic>{
+Map<String, dynamic> _$PurchasesToJson(Purchases instance) => <String, dynamic>{
       'id': instance.id,
       'penyadapld': instance.penyadapld,
       'purchaserld': instance.purchaserld,

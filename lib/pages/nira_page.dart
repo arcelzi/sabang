@@ -8,7 +8,6 @@ import 'package:sabang/menu/addnira.dart';
 import 'package:http/http.dart' as http;
 import 'package:sabang/models/nira.dart';
 
-
 class NiraPage extends StatefulWidget {
   const NiraPage({super.key});
 
@@ -18,36 +17,28 @@ class NiraPage extends StatefulWidget {
 
 class _NiraPageState extends State<NiraPage> {
   final String FontPoppins = 'FontPoppins';
-  List<Nira> niraList = [];
+  final List<Nira> nira = [];
 
- Future<List<Nira?>> getNira() async {
-  Uri api = Uri.parse("http://192.168.102.137:3001/purchases");
-  var response = await http.get(api);
-  List<Nira> nira = [];
+  Future<List<Nira?>> getNira() async {
+    Uri api = Uri.parse("http://192.168.102.137:3001/purchases");
+    var response = await http.get(api);
 
-  print(response.statusCode);
-  if(response.statusCode == 200) {
-    var result = json.decode(response.body);
-    for (var item in result){
-      print(item);
-      nira.add(Nira.fromJson(item));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      var result = json.decode(response.body);
+      for (var item in result) {
+        nira.add(Nira.fromJson(item));
+      }
     }
-    setState(() {
-      
-    });
-    return nira;
-  } else {
+    setState(() {});
     return nira;
   }
+
+  @override
+  void initState() {
+    getNira();
+    super.initState();
   }
-    
- 
- @override
- void initState() {
-  getNira();
-  super.initState();
- }
- 
 
   @override
   Widget build(BuildContext context) {
@@ -105,34 +96,41 @@ class _NiraPageState extends State<NiraPage> {
               height: 20,
             ),
             Expanded(
-              child: FutureBuilder(
-                future: getNira(),
-                builder: (context, snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    if (snapshot.hasData) {
-                      return ListView.builder(itemBuilder: (context, index){
-                        return Card(
-                          child: Padding(padding: EdgeInsets.all(8),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(niraList[index].ph.toString()),
-                              Text(niraList[index].sugarlevel.toString()),
-                              Text(niraList[index].volume.toString())
-                            ],
-                          ),),
-                        );
-                      },
-                      itemCount: niraList.length,);
-                    } else {
-                      return Center(child: Text("TIDAK ADA NIRA"),);
-                    }
-                  }
-                }),
-            )
+                child: ListView.builder(
+              itemBuilder: (context, index) {
+                return Card(
+                    child: Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xFF78937A),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "PH : " + nira[index].ph.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            "BRIX : " + nira[index].sugarLevel.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            "Volume : " + nira[index].volume.toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            "Amount: " + nira[index].amount.toString(),
+                            style: TextStyle(color: Colors.white),
+                          )
+                        ]),
+                  ),
+                ));
+              },
+              itemCount: nira.length,
+            ))
           ],
         ),
       ),
@@ -148,4 +146,3 @@ class _NiraPageState extends State<NiraPage> {
     );
   }
 }
-

@@ -1,12 +1,15 @@
 import 'dart:convert';
-import 'dart:js';
+import 'dart:io';
+
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:sabang/models/users.dart';
 import 'package:sabang/pages/nira_page.dart';
 import 'package:sabang/models/nira.dart';
+import 'package:location/location.dart';
 
 class AddNira extends StatefulWidget {
   const AddNira({super.key});
@@ -15,15 +18,76 @@ class AddNira extends StatefulWidget {
   State<AddNira> createState() => _AddNiraState();
 }
 
+Location location = new Location();
+late bool _serviceEnabled;
+late PermissionStatus _permissionGranted;
+late LocationData _locationData;
+
+Future<dynamic> getLocation() async {
+  _serviceEnabled = await location.serviceEnabled();
+  if (!_serviceEnabled) _serviceEnabled = await location.requestService();
+
+  _permissionGranted = await location.hasPermission();
+  if (_permissionGranted == PermissionStatus.denied) {
+    _permissionGranted = await location.requestPermission();
+  }
+
+  _locationData = await location.getLocation();
+  return _locationData;
+}
+
+// Future<Nira?> postNira(
+//     num penyadapId, num purchaserld, num ph, num sugarLevel, num volume) async {
+//   var response =
+//       await http.post(Uri.parse("192.168.102.137:3001/purchases"), body: {
+//     "penyadapId": penyadapId,
+//     "purchaserId": purchaserld,
+//     "ph": 1,
+//     "sugarLevel": 1,
+//     "volume": 1
+//   });
+//   var data = response.body;
+//   print(data);
+
+//   if (response.statusCode == 201) {
+//     String responseNum = response.body;
+//     niraFromJson(responseNum);
+//   } else
+//     return null;
+// }
 
 class _AddNiraState extends State<AddNira> {
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
-  final Api api = Api();
+
+ 
+
+  Future<List<Dropdownmodel>> getPost() async {
+    try {
+      List<Dropdownmodel> dropdownList = await dropdownmodelFromJson('id');
+    final response = await http.get(Uri.parse('http://192.168.102.137:3001/users/penyadap'));
+    final body = json.decode(response.body) as List ;
+    if(response.statusCode == 200) {
+      return body.map((e){
+        final map = e as Map<String, dynamic> ;
+        return Dropdownmodel(
+          id: map['id'],
+          name: map['name'],
+          username: map['username']
+        );
+      }).toList();
+    }
+    }on SocketException{
+      throw Exception('No internet');
+    }
+    throw Exception('Error mengambil data');
+  }
   
-  int id = 0;
+  var selectedValue;
   
+  @override
   Widget build(BuildContext context) {
+    // getUser();
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FB),
       appBar: AppBar(
@@ -49,8 +113,8 @@ class _AddNiraState extends State<AddNira> {
           GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Container(
-              width: 350,
-              height: 380,
+              width: 400,
+              height: 430,
               margin: EdgeInsets.symmetric(horizontal: 80),
               padding: EdgeInsets.only(top: 5, left: 16, right: 16),
               decoration: BoxDecoration(
@@ -76,14 +140,44 @@ class _AddNiraState extends State<AddNira> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 20, top: 16),
-                          child: Text(
-                            'PH',
+                          child: 
+                          
+                          Text(
+                            'Penyadap',
                             style: TextStyle(
                               fontFamily: FontPoppins,
                               fontSize: 16,
                             ),
                           ),
                         ),
+                        SizedBox(height: 6,),
+                        FutureBuilder<List<Dropdownmodel>>(
+                          future: getPost(),
+                          builder: (context, snapshot) {
+                            if(snapshot.hasData){
+                              return DropdownButton(
+                                hint: Text('Pilih Penyadap'),
+                                isExpanded: true,
+                                value: selectedValue,
+                                items: snapshot.data!.map((e){
+                                  return DropdownMenuItem(
+                                    value: e.id.toString(),
+                                    child: Text(e.name.toString()));
+                                }).toList(), 
+                                onChanged: (value){
+                                  selectedValue = value;
+                                  setState(() {
+                                    
+                                  });
+                                });
+
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                        
+                        SizedBox(height: 6,),
+                        Text("PH", style: TextStyle(fontFamily: FontPoppins, fontSize: 16),),
                         SizedBox(
                           height: 6,
                         ),
@@ -120,13 +214,21 @@ class _AddNiraState extends State<AddNira> {
             height: 44,
             width: 88,
             child: ElevatedButton(
-                onPressed: () {
-                 if(_formKey.currentState!.validate()) {
-                  _formKey.currentState?.save();
-                  api.createNira(Nira(id: 0, ph: double.parse(_phController.text), sugarlevel: double.parse(_brixController.text), volume: double.parse(_volumeController.text)));
-                  Navigator.pop(context);
-                 }
+                onPressed: (){
+                  submitNira();
+                  getLocation().then((value){
+                    print(value);
+                  });
                 },
+                // () async {
+                //   num ph = num.parse(_phController.text);
+                //   num sugarLevel = num.parse(_brixController.text);
+                //   num volume = num.parse(_volumeController.text);
+
+                //   //  getLocation().then((value){
+                //   //     print(value);
+                //   //   });
+                // },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFE0ADA2),
                     shape: RoundedRectangleBorder(
@@ -144,11 +246,50 @@ class _AddNiraState extends State<AddNira> {
     );
   }
 
+Future<void> submitNira() async {
+  final penyadapId = num.parse(getPost().toString());
+  final purchaserId = num.parse(getPost().toString());
+  final ph = num.parse(_phController.text);
+  final sugarLevel = num.parse(_brixController.text);
+  final volume = num.parse(_volumeController.text);
+  final body = {
+    "penyadapId": penyadapId,
+    "purchaserId": purchaserId,
+    "ph": ph,
+    "sugarLevel": sugarLevel,
+    "volume": volume,
+  };
+
+  final url = 'http://192.168.102.137:3001/purchases';
+  final uri = Uri.parse(url);
+  final response = await http.post(uri,body: jsonEncode(body),
+  headers: {'Content-Type': 'application/json; charset=UTF-8'});
+
+  if(response.statusCode == 201) {
+    print('Creation Succes');
+
+  } else {
+  print('Creation Failed');
+  print(response.body);
+  }
+}
+// List data = [];
+// int _value = 1;
+//  getUser() async {
+//   final res = await http.get(Uri.parse('http://192.168.102.137:3001/users'));
+//   data = jsonDecode(res.body);
+//   setState(() {
+    
+//   });
+//  }
 }
 
 var _phController = TextEditingController();
 var _brixController = TextEditingController();
 var _volumeController = TextEditingController();
+
+
+
 
 TextFormField buildPh() {
   return TextFormField(
@@ -235,28 +376,4 @@ TextFormField buildLiterField() {
     },
     onChanged: (value) {},
   );
-}
-
-class Api {
-  final String api = 'http://192.168.102.137:3001/purchases';
-Future<Nira> createNira(Nira nira) async {
-  Map data = {
-    'ph': nira.ph,
-    'sugarlevel': nira.sugarlevel,
-    'volume': nira.volume,
-  };
-
-  final response = await http.post(Uri.parse(api),
-  headers: <String, String> {
-    'Content-Type': 'application/json; charset=UTF-8'
-  },
-  body: jsonEncode(data),
-  );
-  if (response.statusCode == 200) {
-    return Nira.fromJson(json.decode(response.body));
-  } else {
-    print(response);
-    throw Exception('Gagal membuat nira'); 
-  }
-}
 }

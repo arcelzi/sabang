@@ -1,13 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
-part 'nira.g.dart';
 
-List<Nira> niraFromJson(String str) => List<Nira>.from(json.decode(str).map((x) => Nira.fromJson(x)));
+part 'purchases.g.dart';
 
-String niraToJson(List<Nira> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+List<Purchases> purchasesFromJson(String str) => List<Purchases>.from(json.decode(str).map((x) => Purchases.fromJson(x)));
+
+String purchasesToJson(List<Purchases> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 @JsonSerializable()
-class Nira {
+class Purchases {
     @JsonKey(name: "id")
     int? id;
     @JsonKey(name: "penyadapld")
@@ -15,17 +16,17 @@ class Nira {
     @JsonKey(name: "purchaserld")
     int? purchaserld;
     @JsonKey(name: "ph")
-    num? ph;
+    String? ph;
     @JsonKey(name: "sugarLevel")
-    num? sugarLevel;
+    String? sugarLevel;
     @JsonKey(name: "volume")
-    num? volume;
+    String? volume;
     @JsonKey(name: "lat")
-    num? lat;
+    String? lat;
     @JsonKey(name: "lng")
-    num? lng;
+    String? lng;
     @JsonKey(name: "amount")
-    num? amount;
+    String? amount;
     @JsonKey(name: "timestamp")
     DateTime? timestamp;
     @JsonKey(name: "paidAt")
@@ -35,7 +36,7 @@ class Nira {
     @JsonKey(name: "auditedAt")
     DateTime? auditedAt;
 
-    Nira({
+    Purchases({
         this.id,
         this.penyadapld,
         this.purchaserld,
@@ -51,9 +52,7 @@ class Nira {
         this.auditedAt,
     });
 
-    factory Nira.fromJson(Map<String, dynamic> json) => _$NiraFromJson(json);
+    factory Purchases.fromJson(Map<String, dynamic> json) => _$PurchasesFromJson(json);
 
-    Map<String, dynamic> toJson() => _$NiraToJson(this);
+    Map<String, dynamic> toJson() => _$PurchasesToJson(this);
 }
-
-  
