@@ -16,17 +16,17 @@ class Purchases {
     @JsonKey(name: "purchaserld")
     int? purchaserld;
     @JsonKey(name: "ph")
-    String? ph;
+    num? ph;
     @JsonKey(name: "sugarLevel")
-    String? sugarLevel;
+    num? sugarLevel;
     @JsonKey(name: "volume")
-    String? volume;
+    num? volume;
     @JsonKey(name: "lat")
-    String? lat;
+    num? lat;
     @JsonKey(name: "lng")
-    String? lng;
+    num? lng;
     @JsonKey(name: "amount")
-    String? amount;
+    num? amount;
     @JsonKey(name: "timestamp")
     DateTime? timestamp;
     @JsonKey(name: "paidAt")

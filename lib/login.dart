@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
 import 'package:sabang/view/dashboard.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sabang/services/http.dart' as http_service;
 
 class Login extends StatefulWidget {
   @override
@@ -26,7 +26,7 @@ class _LoginState extends State<Login> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? val = pref.getString("login");
     if (val != null) {
-      Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => Dashboard()),
           (route) => false);
     }
@@ -101,6 +101,10 @@ class _LoginState extends State<Login> {
                       ),
                       labelText: 'Password',
                       hintText: 'Enter a Password'),
+                      validator: (value) {
+                            if (value!.isEmpty) return 'Password tidak boleh kosong';
+                            return null;
+                          },
                 ),
               ),
               SizedBox(
@@ -136,19 +140,23 @@ class _LoginState extends State<Login> {
   void login() async {
     if (passwordController.text.isNotEmpty &&
         usernameController.text.isNotEmpty) {
-      var response =
-          await http.post(Uri.parse("http://192.168.102.137:3001/auth/login"),
-              body: ({
-                "username": usernameController.text,
-                "password": passwordController.text,
-              }));
-      if (response.statusCode == 200) {
-        final body = jsonDecode(response.body);
+      var response = await http_service
+          .post("http://192.168.102.10:3001/auth/login", body: {
+        "username": usernameController.text,
+        "password": passwordController.text,
+      });
+      // await http.post(Uri.parse("http://192.168.102.10:3001/auth/login"),
+      //     body: ({
+      //       "username": usernameController.text,
+      //       "password": passwordController.text,
+      //     }));
+      if (response.isSuccess) {
+        final body = jsonDecode(response.data);
         // print("Login Token"+ body["token"]);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Berhasil Login")));
-          
-        pageRoute(body['token']);
+
+        gotoDashboard(body['token']);
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Username/password salah")));
@@ -157,14 +165,12 @@ class _LoginState extends State<Login> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Masukkan username/password")));
     }
-     
   }
-void pageRoute(String token) async {
+
+  void gotoDashboard(String token) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('login', token);
-      Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => Dashboard()),
-          (route) => false);
+    await pref.setString('token', token);
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Dashboard()), (route) => false);
   }
- 
 }

@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sabang/menu/addpurchase.dart';
-import '../menu/list/listpurchase.dart';
+import 'package:sabang/models/purchases.dart';
+import 'package:http/http.dart' as http;
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage ({super.key});
@@ -13,16 +17,27 @@ class PurchasePage extends StatefulWidget {
 
 class _PurchasePageState extends State<PurchasePage> {
   final String FontPoppins = 'FontPoppins';
-  final List<Purchases> purchases = [
-    Purchases(
-        id: 1,
-        tappers: 'Sabang',
-        ph: 2,
-        brix: 3,
-        volume: 5,
-        harga: 3000,
-        date: DateTime.now())
-  ];
+ final List<Purchases> purchase = [];
+
+ Future<List<Purchases?>> getPurchase() async {
+  Uri api = Uri.parse("http://192.168.102.10:3001/purchases");
+  var response = await http.get(api);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    var result = json.decode(response.body);
+    for (var item in result) {
+      purchase.add(Purchases.fromJson(item));
+    }
+  }
+  setState(() {});
+  return purchase;
+ }
+ @override
+ void initState() {
+  getPurchase();
+  super.initState();
+ }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,55 +77,52 @@ class _PurchasePageState extends State<PurchasePage> {
           elevation: 0,
           centerTitle: true,
         ),
-        body: ListView(
-          children: purchases.map((pu) {
-            return Card(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFF78937A),
-                    borderRadius: BorderRadius.circular(15)),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
+        body: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              SizedBox(height: 10,),
+              Expanded(child: ListView.builder(
+                itemBuilder: ((context, index) {
+                  return Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF78937A),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            pu.tappers,
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "PH : " + purchase[index].ph.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "Brix : " + purchase[index].sugarLevel.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text("Volume : " + purchase[index].volume.toString(),
                             style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'PH : ' + pu.ph.toString(),
+                            ),
+                            Text("Harga : " + purchase[index].amount.toString(),
                             style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'Brix : ' + pu.brix.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'Volume : ' + pu.volume.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'Harga : Rp.' + pu.harga.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            pu.date.toString(),
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+                            ),
+                            Text(purchase[index].timestamp.toString(),
+                            style: TextStyle(color: Colors.white),)
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                  
+                }),
+                itemCount: purchase.length,
+                ))
+            ],
+          ),
         ));
   }
 }

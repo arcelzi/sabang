@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
+import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/models/users.dart';
 import 'package:sabang/pages/nira_page.dart';
 import 'package:sabang/models/nira.dart';
@@ -23,7 +23,7 @@ late bool _serviceEnabled;
 late PermissionStatus _permissionGranted;
 late LocationData _locationData;
 
-Future<dynamic> getLocation() async {
+Future<LocationData> getLocation() async {
   _serviceEnabled = await location.serviceEnabled();
   if (!_serviceEnabled) _serviceEnabled = await location.requestService();
 
@@ -60,31 +60,33 @@ class _AddNiraState extends State<AddNira> {
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
 
- 
-
-  Future<List<Dropdownmodel>> getPost() async {
-    try {
-      List<Dropdownmodel> dropdownList = await dropdownmodelFromJson('id');
-    final response = await http.get(Uri.parse('http://192.168.102.137:3001/users/penyadap'));
-    final body = json.decode(response.body) as List ;
-    if(response.statusCode == 200) {
-      return body.map((e){
-        final map = e as Map<String, dynamic> ;
-        return Dropdownmodel(
-          id: map['id'],
-          name: map['name'],
-          username: map['username']
-        );
-      }).toList();
-    }
-    }on SocketException{
-      throw Exception('No internet');
-    }
-    throw Exception('Error mengambil data');
+  @override
+  void initState() {
+    super.initState();
+    getPenyadap();
   }
-  
-  var selectedValue;
-  
+
+  List<Dropdownmodel> listpenyadap = [];
+  getPenyadap() async {
+    try {
+      final response =
+          await http_service.get('http://192.168.102.10:3001/users/penyadap');
+      if (response.isSuccess) {
+        print(response.data);
+        for (var item in response.data) {
+          print(item);
+          listpenyadap.add(Dropdownmodel(
+              id: item['id'], name: item['name'], username: item['username']));
+        }
+        setState(() {});
+      }
+    } on SocketException {
+      throw Exception('No internet');
+    } catch (e) {
+      throw Exception('Error mengambil data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // getUser();
@@ -140,9 +142,7 @@ class _AddNiraState extends State<AddNira> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 20, top: 16),
-                          child: 
-                          
-                          Text(
+                          child: Text(
                             'Penyadap',
                             style: TextStyle(
                               fontFamily: FontPoppins,
@@ -150,34 +150,30 @@ class _AddNiraState extends State<AddNira> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 6,),
-                        FutureBuilder<List<Dropdownmodel>>(
-                          future: getPost(),
-                          builder: (context, snapshot) {
-                            if(snapshot.hasData){
-                              return DropdownButton(
-                                hint: Text('Pilih Penyadap'),
-                                isExpanded: true,
-                                value: selectedValue,
-                                items: snapshot.data!.map((e){
-                                  return DropdownMenuItem(
-                                    value: e.id.toString(),
-                                    child: Text(e.name.toString()));
-                                }).toList(), 
-                                onChanged: (value){
-                                  selectedValue = value;
-                                  setState(() {
-                                    
-                                  });
-                                });
-
-                            } else {
-                              return CircularProgressIndicator();
-                            }
-                          }),
-                        
-                        SizedBox(height: 6,),
-                        Text("PH", style: TextStyle(fontFamily: FontPoppins, fontSize: 16),),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        DropdownButton(
+                            hint: Text('Pilih Penyadap'),
+                            isExpanded: true,
+                            value: selectedPenyadap,
+                            items: listpenyadap.map((e) {
+                              return DropdownMenuItem<int>(
+                                  value: e.id, child: Text(e.name.toString()));
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPenyadap = value as int;
+                              });
+                            }),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "PH",
+                          style:
+                              TextStyle(fontFamily: FontPoppins, fontSize: 16),
+                        ),
                         SizedBox(
                           height: 6,
                         ),
@@ -214,11 +210,8 @@ class _AddNiraState extends State<AddNira> {
             height: 44,
             width: 88,
             child: ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   submitNira();
-                  getLocation().then((value){
-                    print(value);
-                  });
                 },
                 // () async {
                 //   num ph = num.parse(_phController.text);
@@ -246,40 +239,48 @@ class _AddNiraState extends State<AddNira> {
     );
   }
 
-Future<void> submitNira() async {
-  final penyadapId = num.parse(getPost().toString());
-  final purchaserId = num.parse(getPost().toString());
-  final ph = num.parse(_phController.text);
-  final sugarLevel = num.parse(_brixController.text);
-  final volume = num.parse(_volumeController.text);
-  final body = {
-    "penyadapId": penyadapId,
-    "purchaserId": purchaserId,
-    "ph": ph,
-    "sugarLevel": sugarLevel,
-    "volume": volume,
-  };
+  Future<void> submitNira() async {
+    if (_formKey.currentState!.validate()) {
+      getLocation().then((value) {
+        print(value);
+      });
 
-  final url = 'http://192.168.102.137:3001/purchases';
-  final uri = Uri.parse(url);
-  final response = await http.post(uri,body: jsonEncode(body),
-  headers: {'Content-Type': 'application/json; charset=UTF-8'});
+      var currentLocation = await getLocation();
 
-  if(response.statusCode == 201) {
-    print('Creation Succes');
+      final ph = num.parse(_phController.text);
+      final sugarLevel = num.parse(_brixController.text);
+      final volume = num.parse(_volumeController.text);
+      final body = {
+        "penyadapId": selectedPenyadap,
+        "purchaserId": 0,
+        "ph": ph,
+        "sugarLevel": sugarLevel,
+        "volume": volume,
+        "lat": currentLocation.latitude,
+        "lng": currentLocation.longitude
+      };
+      print(body);
 
-  } else {
-  print('Creation Failed');
-  print(response.body);
+      final response = await http_service.post(
+        "http://192.168.102.10:3001/purchases",
+        body: body,
+      );
+
+      if (response.isSuccess) {
+        print('Creation Succes');
+      } else {
+        print('Creation Failed');
+        print(response.data);
+      }
+    }
   }
-}
 // List data = [];
 // int _value = 1;
 //  getUser() async {
 //   final res = await http.get(Uri.parse('http://192.168.102.137:3001/users'));
 //   data = jsonDecode(res.body);
 //   setState(() {
-    
+
 //   });
 //  }
 }
@@ -287,9 +288,7 @@ Future<void> submitNira() async {
 var _phController = TextEditingController();
 var _brixController = TextEditingController();
 var _volumeController = TextEditingController();
-
-
-
+int? selectedPenyadap = null;
 
 TextFormField buildPh() {
   return TextFormField(
