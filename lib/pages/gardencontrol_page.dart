@@ -1,7 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:sabang/menu/addgardencontrol.dart';
+
+
 
 class GardenControlPage extends StatefulWidget {
   const GardenControlPage({super.key});
@@ -19,6 +23,7 @@ class _GardenControlPageState extends State<GardenControlPage> {
         question3: "Yes",
         foto: 'assets/images/aren.png')
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -20,7 +20,7 @@ class _NiraPageState extends State<NiraPage> {
   final List<Nira> nira = [];
 
   Future<List<Nira?>> getNira() async {
-    Uri api = Uri.parse("http://192.168.102.10:3001/purchases");
+    Uri api = Uri.parse("http://192.168.102.137:3001/purchases");
     var response = await http.get(api);
 
     print(response.statusCode);

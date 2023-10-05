@@ -1,6 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sabang/view/selectphoto.dart';
+import 'package:sabang/widgets/imagepicker.dart';
 
 class AddGarden extends StatefulWidget {
   const AddGarden({super.key});
@@ -13,6 +20,56 @@ class _AddGardenState extends State<AddGarden> {
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
   String selectValue = '';
+  File? _image;
+
+  Future _pickImage(ImageSource source) async {
+    try{
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+      File? img = File(image.path);
+      img = await _cropImage(imageFile: img);
+      setState(() {
+        _image = img;
+        Navigator.of(context).pop();
+      });
+    } on PlatformException catch (e) {
+      print(e);
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future _cropImage({required File imageFile}) async {
+    CroppedFile? croppedImage = await ImageCropper().cropImage(sourcePath: imageFile.path);
+    if (croppedImage == null) return null;
+    return File(croppedImage.path);
+  }
+
+  void _showSelectPhotoOptions (BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+        ),
+      ), 
+      builder: ((context) => DraggableScrollableSheet(
+        initialChildSize: 0.28,
+        maxChildSize: 0.4,
+        minChildSize: 0.28,
+        expand: false,
+        builder: (context, scrollController){
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: SelectPhotoOptions(
+               ontap: _pickImage,
+              ),
+            );
+          }
+        )
+      )
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +156,7 @@ class _AddGardenState extends State<AddGarden> {
                           children: [
                             Expanded(
                               child: RadioListTile(
-                                activeColor: Color(0xFF78937A),
+                                  activeColor: Color(0xFF78937A),
                                   title: Text("Yes"),
                                   value: 'yes',
                                   groupValue: selectValue,
@@ -111,7 +168,7 @@ class _AddGardenState extends State<AddGarden> {
                             ),
                             Expanded(
                               child: RadioListTile(
-                                activeColor: Color(0xFF78937A),
+                                  activeColor: Color(0xFF78937A),
                                   title: Text("No"),
                                   value: 'no',
                                   groupValue: selectValue,
@@ -131,7 +188,22 @@ class _AddGardenState extends State<AddGarden> {
                         SizedBox(
                           height: 9,
                         ),
-                        buildPict()
+                        Container(
+                          height: 185,
+                          width: 215,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Color(0xFFE9E9E9),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _showSelectPhotoOptions(context);
+                            },
+                            icon: Icon(Icons.add_photo_alternate_rounded),
+                            color: Color(0xFF6D6B6B),
+                            iconSize: 45,
+                          ),
+                        )
                       ],
                     ),
                   )),
@@ -167,6 +239,8 @@ class _AddGardenState extends State<AddGarden> {
     );
   }
 }
+
+
 
 TextFormField buildQuest() {
   return TextFormField(
@@ -219,22 +293,5 @@ TextFormField buildQuest2() {
       }
       return null;
     },
-  );
-}
-
-Container buildPict() {
-  return Container(
-    height: 185,
-    width: 215,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      color: Color(0xFFE9E9E9),
-    ),
-    child: IconButton(
-      onPressed: () {},
-      icon: Icon(Icons.add_photo_alternate_rounded),
-      color: Color(0xFF6D6B6B),
-      iconSize: 45,
-    ),
   );
 }

@@ -141,7 +141,7 @@ class _LoginState extends State<Login> {
     if (passwordController.text.isNotEmpty &&
         usernameController.text.isNotEmpty) {
       var response = await http_service
-          .post("http://192.168.102.10:3001/auth/login", body: {
+          .post("http://192.168.102.137:3001/auth/login", body: {
         "username": usernameController.text,
         "password": passwordController.text,
       });
@@ -151,7 +151,7 @@ class _LoginState extends State<Login> {
       //       "password": passwordController.text,
       //     }));
       if (response.isSuccess) {
-        final body = jsonDecode(response.data);
+        final body = response.data;
         // print("Login Token"+ body["token"]);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Berhasil Login")));
@@ -169,7 +169,7 @@ class _LoginState extends State<Login> {
 
   void gotoDashboard(String token) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('token', token);
+    await pref.setString('login', token);
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => Dashboard()), (route) => false);
   }
