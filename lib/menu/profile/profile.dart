@@ -1,10 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/login.dart';
 import 'package:sabang/menu/profile/updateprofile.dart';
-import 'package:sabang/view/dashboard.dart';
+import 'package:sabang/services/auth_service.dart';
+import 'package:sabang/utils/local_storage.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,7 +20,25 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String token = "";
+  String token = '';
+  String name = LocalStorage.getName();
+  String avatar = LocalStorage.getAvatar();
+  
+  getUpdate() async {
+    var response = await AuthService.getProfile();
+    if(response.isSuccess) {
+      setState(() {
+        LocalStorage.setAvatar(response.data['avatar']);
+        avatar = LocalStorage.getAvatar();
+      });
+    }
+  }
+
+  
+  @override
+  void setState(VoidCallback fn){
+    if(mounted) super.setState(fn);
+  }
   @override
   void initState() {
     super.initState();

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,8 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 // import 'package:http/http.dart' as http;
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/models/users.dart';
-import 'package:sabang/pages/nira_page.dart';
-import 'package:sabang/models/nira.dart';
+
 import 'package:location/location.dart';
 
 class AddNira extends StatefulWidget {
@@ -70,7 +68,7 @@ class _AddNiraState extends State<AddNira> {
   getPenyadap() async {
     try {
       final response =
-          await http_service.get('http://192.168.102.10:3001/users/penyadap');
+          await http_service.get('http://192.168.102.137:3001/users/penyadap');
       if (response.isSuccess) {
         print(response.data);
         for (var item in response.data) {
@@ -109,132 +107,136 @@ class _AddNiraState extends State<AddNira> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Container(
-              width: 400,
-              height: 430,
-              margin: EdgeInsets.symmetric(horizontal: 80),
-              padding: EdgeInsets.only(top: 5, left: 16, right: 16),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0xFFD8D4D4),
-                    offset: const Offset(
-                      0,
-                      0,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            GestureDetector(
+              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              child: Container(
+                width: 420,
+                height: 450,
+                margin: EdgeInsets.symmetric(horizontal: 80),
+                padding: EdgeInsets.only(top: 5, left: 16, right: 16),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFFD8D4D4),
+                      offset: const Offset(
+                        0,
+                        0,
+                      ),
+                      blurRadius: 6,
+                      spreadRadius: 2,
                     ),
-                    blurRadius: 6,
-                    spreadRadius: 2,
-                  ),
-                ],
-                color: Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, top: 16),
-                          child: Text(
-                            'Penyadap',
-                            style: TextStyle(
-                              fontFamily: FontPoppins,
-                              fontSize: 16,
+                  ],
+                  color: Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, top: 16),
+                            child: Text(
+                              'Penyadap',
+                              style: TextStyle(
+                                fontFamily: FontPoppins,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        DropdownButton(
-                            hint: Text('Pilih Penyadap'),
-                            isExpanded: true,
-                            value: selectedPenyadap,
-                            items: listpenyadap.map((e) {
-                              return DropdownMenuItem<int>(
-                                  value: e.id, child: Text(e.name.toString()));
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedPenyadap = value as int;
-                              });
-                            }),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "PH",
-                          style:
-                              TextStyle(fontFamily: FontPoppins, fontSize: 16),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        buildPh(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, top: 16),
-                          child: Text(
-                            "Kadar Gula",
-                            textAlign: TextAlign.justify,
+                          SizedBox(
+                            height: 6,
                           ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        buildKadarField(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, top: 16),
-                          child: Text("Volume"),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        buildLiterField(),
-                      ],
-                    ),
+                          DropdownButton(
+                              hint: Text('Pilih Penyadap'),
+                              isExpanded: true,
+                              value: selectedPenyadap,
+                              items: listpenyadap.map((e) {
+                                return DropdownMenuItem<int>(
+                                    value: e.id, child: Text(e.name.toString()));
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPenyadap = value as int;
+                                });
+                              }),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "PH",
+                            style:
+                                TextStyle(fontFamily: FontPoppins, fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          buildPh(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, top: 16),
+                            child: Text(
+                              "Kadar Gula",
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          buildKadarField(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, top: 16),
+                            child: Text("Volume"),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          buildLiterField(),
+                        ],
+                      ),
+                    )),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 31),
+              height: 44,
+              width: 88,
+              child: ElevatedButton(
+                  onPressed: () {
+                    submitNira();
+
+                  },
+                  // () async {
+                  //   num ph = num.parse(_phController.text);
+                  //   num sugarLevel = num.parse(_brixController.text);
+                  //   num volume = num.parse(_volumeController.text);
+      
+                  //   //  getLocation().then((value){
+                  //   //     print(value);
+                  //   //   });
+                  // },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFE0ADA2),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30))),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                        fontFamily: FontPoppins,
+                        fontSize: 14,
+                        color: Color(0xFFFFFFFF)),
                   )),
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            margin: EdgeInsets.only(right: 31),
-            height: 44,
-            width: 88,
-            child: ElevatedButton(
-                onPressed: () {
-                  submitNira();
-                },
-                // () async {
-                //   num ph = num.parse(_phController.text);
-                //   num sugarLevel = num.parse(_brixController.text);
-                //   num volume = num.parse(_volumeController.text);
-
-                //   //  getLocation().then((value){
-                //   //     print(value);
-                //   //   });
-                // },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFE0ADA2),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30))),
-                child: Text(
-                  "Save",
-                  style: TextStyle(
-                      fontFamily: FontPoppins,
-                      fontSize: 14,
-                      color: Color(0xFFFFFFFF)),
-                )),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -262,14 +264,17 @@ class _AddNiraState extends State<AddNira> {
       print(body);
 
       final response = await http_service.post(
-        "http://192.168.102.10:3001/purchases",
+        "http://192.168.102.137:3001/purchases",
         body: body,
       );
 
       if (response.isSuccess) {
         print('Creation Succes');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Creation Succes")));
+        Navigator.pop(context);
       } else {
         print('Creation Failed');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Creation Failed")));
         print(response.data);
       }
     }

@@ -130,7 +130,8 @@ class _NiraPageState extends State<NiraPage> {
                 ));
               },
               itemCount: nira.length,
-            ))
+            ),
+            )
           ],
         ),
       ),

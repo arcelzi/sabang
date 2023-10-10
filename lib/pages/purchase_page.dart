@@ -20,7 +20,7 @@ class _PurchasePageState extends State<PurchasePage> {
  final List<Purchases> purchase = [];
 
  Future<List<Purchases?>> getPurchase() async {
-  Uri api = Uri.parse("http://192.168.102.10:3001/purchases");
+  Uri api = Uri.parse("http://192.168.102.137:3001/purchases");
   var response = await http.get(api);
 
   print(response.statusCode);
