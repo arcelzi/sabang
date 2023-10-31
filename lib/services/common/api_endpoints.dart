@@ -1,4 +1,4 @@
-const String baseAuthUrl = "http://192.168.102.137:3001";
+const String baseAuthUrl = "http://192.168.102.182:3001";
 
 
 
@@ -8,6 +8,9 @@ String getProfileUrl() => "$baseAuthUrl/auth/profile";
 String changeProfileUrl() => "$baseAuthUrl/auth/profile";
 String changeProfilePictureUrl() => "$baseAuthUrl/auth/profile";
 String logoutUrl() => "$baseAuthUrl/auth/logout";
+
+//users
+String getTappers() => "$baseAuthUrl/users/penyadap";
 
 //nira
 String getNira() => "$baseAuthUrl/purchases";

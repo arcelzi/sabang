@@ -241,9 +241,14 @@ class _AddGardenState extends State<AddGarden> {
 }
 
 
+var questController = TextEditingController();
+var quest1Controller = TextEditingController();
+
+
 
 TextFormField buildQuest() {
   return TextFormField(
+    controller: questController,
     textAlign: TextAlign.start,
     style: TextStyle(
       fontSize: 14,
@@ -271,6 +276,7 @@ TextFormField buildQuest() {
 
 TextFormField buildQuest2() {
   return TextFormField(
+    controller: quest1Controller,
     textAlign: TextAlign.start,
     style: TextStyle(
       fontSize: 14,

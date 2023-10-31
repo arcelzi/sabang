@@ -223,6 +223,51 @@ Future<HTTPResponse> put(url, {Object? body, Duration timeoutDuration = const Du
   }
 }
 
+Future<HTTPResponse> patch(url, {Object? body, Duration timeoutDuration = const Duration(seconds: 20)}) async {
+  try {
+    // var connectivity = ConnectivityResult.none;
+    // var monde = ConnectivityWrapper((e) => connectivity = e);
+    // await monde.initConnectivity();
+    // monde.listen();
+
+    // log(connectivity.toString());
+    // if (connectivity == ConnectivityResult.none) {
+    //   log('$connectivity, no Internet, trying in 10 seconds');
+    //   await Future.delayed(const Duration(seconds: 10));
+    //   if (connectivity == ConnectivityResult.none) {
+    //     log('$connectivity, second try still no internet');
+    //     return HTTPResponse(
+    //       status: HTTPResponseStatus.noInternet,
+    //       userMessage: 'Anda tidak terhubung ke Internet'
+    //     );
+    //   }
+    // }
+    // log('$connectivity, finally have internet');
+    final response = await http.patch(
+        Uri.parse(url),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader : await token
+        },
+        body: json.encode(body)
+    ).timeout(timeoutDuration);
+
+    return responseCheck(response);
+  } on TimeoutException catch(e) {
+    log(e.toString());
+    return HTTPResponse(
+      status: HTTPResponseStatus.timeout,
+      userMessage: 'Timeout, Coba periksa koneksi anda'  
+    );
+  } on Exception catch(e) {
+    log(e.toString());
+    return HTTPResponse(
+      status: HTTPResponseStatus.error,
+      userMessage: 'Terjadi kesalahan'
+    );
+  }
+}
+
 Future<HTTPResponse> delete(url, {Object? body, Duration timeoutDuration = const Duration(seconds: 20)}) async {
   try {
     // var connectivity = ConnectivityResult.none;

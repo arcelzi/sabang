@@ -4,13 +4,13 @@
 
 import 'dart:convert';
 
-List<Dropdownmodel> dropdownmodelFromJson(String str) => List<Dropdownmodel>.from(json.decode(str).map((x) => Dropdownmodel.fromJson(x)));
+List<Users> dropdownmodelFromJson(String str) => List<Users>.from(json.decode(str).map((x) => Users.fromJson(x)));
 
-String dropdownmodelToJson(List<Dropdownmodel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String dropdownmodelToJson(List<Users> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Dropdownmodel {
+class Users {
     int? id;
-    String? name;
+    String name;
     String? nik;
     String? phone;
     String? address;
@@ -20,10 +20,11 @@ class Dropdownmodel {
     dynamic villageId;
     dynamic avatar;
     int? status;
+    String? token;
 
-    Dropdownmodel({
+    Users({
         this.id,
-        this.name,
+        required this.name,
         this.nik,
         this.phone,
         this.address,
@@ -33,9 +34,10 @@ class Dropdownmodel {
         this.villageId,
         this.avatar,
         this.status,
+        this.token
     });
 
-    factory Dropdownmodel.fromJson(Map<String, dynamic> json) => Dropdownmodel(
+    factory Users.fromJson(Map<String, dynamic> json) => Users(
         id: json["id"],
         name: json["name"],
         nik: json["nik"],
@@ -47,6 +49,7 @@ class Dropdownmodel {
         villageId: json["villageId"],
         avatar: json["avatar"],
         status: json["status"],
+        token: json["token"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -61,5 +64,6 @@ class Dropdownmodel {
         "villageId": villageId,
         "avatar": avatar,
         "status": status,
+        "token": token
     };
 }

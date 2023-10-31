@@ -4,23 +4,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sabang/menu/addnira.dart';
+import 'package:sabang/menu/addpurchase.dart';
 import 'package:http/http.dart' as http;
 import 'package:sabang/models/nira.dart';
 
-class NiraPage extends StatefulWidget {
-  const NiraPage({super.key});
+class PurchasePage extends StatefulWidget {
+  const PurchasePage({super.key});
 
   @override
-  State<NiraPage> createState() => _NiraPageState();
+  State<PurchasePage> createState() => _PurchasePageState();
 }
 
-class _NiraPageState extends State<NiraPage> {
+class _PurchasePageState extends State<PurchasePage> {
   final String FontPoppins = 'FontPoppins';
   final List<Nira> nira = [];
 
   Future<List<Nira?>> getNira() async {
-    Uri api = Uri.parse("http://192.168.102.137:3001/purchases");
+    Uri api = Uri.parse("http://192.168.102.182:3001/purchases");
     var response = await http.get(api);
 
     print(response.statusCode);
@@ -57,7 +57,7 @@ class _NiraPageState extends State<NiraPage> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Nira",
+          "Purchases",
           style: GoogleFonts.sourceSansPro(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -138,7 +138,7 @@ class _NiraPageState extends State<NiraPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: ((context) => AddNira())));
+              context, MaterialPageRoute(builder: ((context) => AddPurchase())));
         },
         backgroundColor: Color(0xFFE5E1E1),
         child: Icon(FontAwesomeIcons.plus),

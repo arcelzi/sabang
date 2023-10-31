@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sabang/pages/gardencontrol_page.dart';
-import 'package:sabang/pages/nira_page.dart';
+import 'package:sabang/pages/purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
-import 'package:sabang/pages/purchase_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,8 +23,8 @@ class _DashboardState extends State<Dashboard>{
   final String FontPoppins = 'FontPoppins';
     List menuList = [
     {
-      "icon": FontAwesomeIcons.box,
-      "title": "Nira",
+      "icon": FontAwesomeIcons.cartShopping,
+      "title": "Purchases",
       "color": Color(0xFF78937A)
     },
     {
@@ -33,11 +32,11 @@ class _DashboardState extends State<Dashboard>{
       "title": "Garden Control",
       "color": Color(0xFF78937A)
     },
-    {
-      "icon": FontAwesomeIcons.cartShopping,
-      "title": "Purchase",
-      "color": Color(0xFF78937A)
-    },
+    // {
+    //   "icon": FontAwesomeIcons.cartShopping,
+    //   "title": "Purchase",
+    //   "color": Color(0xFF78937A)
+    // },
   ];
   String token = "";
   @override
@@ -173,11 +172,11 @@ class _DashboardState extends State<Dashboard>{
                         return InkWell(
                           onTap: (){
                             if (index == 0) 
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> NiraPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> PurchasePage()));
                             if (index == 1)
                             Navigator.push(context, MaterialPageRoute(builder: ((context) => GardenControlPage())));
-                            if (index == 2)
-                            Navigator.push(context, MaterialPageRoute(builder: ((context) => PurchasePage())));
+                            // if (index == 2)
+                            // Navigator.push(context, MaterialPageRoute(builder: ((context) => PurchasePage())));
                           },
                           child: Container(
                             height: 129.0,

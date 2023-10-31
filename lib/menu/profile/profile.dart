@@ -1,10 +1,12 @@
+
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/login.dart';
-import 'package:sabang/menu/profile/updateprofile.dart';
+import 'package:sabang/menu/profile/editprofile.dart';
 import 'package:sabang/services/auth_service.dart';
 import 'package:sabang/utils/local_storage.dart';
 
@@ -20,9 +22,16 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String token = '';
+  String token = LocalStorage.getToken();
   String name = LocalStorage.getName();
   String avatar = LocalStorage.getAvatar();
+  String? imageBase64;
+  late Uint8List imageBytes;
+
+  initial() {
+    if (token.contains('login:')) return;
+    getUpdate();
+  }
   
   getUpdate() async {
     var response = await AuthService.getProfile();
@@ -52,6 +61,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xFFF5F6FB),
@@ -79,57 +89,22 @@ class _ProfileState extends State<Profile> {
               children: [
                 Stack(
                   children: [
-                    SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: Image.asset('assets/images/people.png'),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Color(0xFFE0ADA2)),
-                        child: const Icon(
-                          FontAwesomeIcons.pencil,
-                          color: Colors.black,
-                          size: 18,
-                        ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        radius: 72,
+                        backgroundImage: NetworkImage(avatar),
+                        backgroundColor: Color(0xFFF5F6FB),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
-                  "Sabang",
+                  name,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                Text("sabang"),
-                SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  height: 50,
-                  width: 200,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => UpdateProfile())));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFE0ADA2),
-                          side: BorderSide.none,
-                          shape: const StadiumBorder()),
-                      child: Text(
-                        "Edit Profile",
-                      )),
                 ),
                 const SizedBox(
                   height: 20,
@@ -141,9 +116,11 @@ class _ProfileState extends State<Profile> {
                   height: 10,
                 ),
                 ProfileMenu(
-                  title: "Settings",
+                  title: "Pengaturan",
                   icon: FontAwesomeIcons.gear,
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.push(context, MaterialPageRoute(builder: ((context) => EditProfile())));
+                  },
                 ),
                 ProfileMenu(
                     title: "Logout",

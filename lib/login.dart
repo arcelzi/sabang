@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sabang/models/users.dart';
+import 'package:sabang/utils/local_storage.dart';
 import 'package:sabang/view/dashboard.dart';
 // import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sabang/services/http.dart' as http_service;
+import 'package:sabang/services/common/api_endpoints.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -14,10 +18,16 @@ class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  
   @override
   void initState() {
     super.initState();
     checkLogin();
+  }
+
+  saveUserData(Users users) {
+    LocalStorage.setAvatar(users.avatar);
+    LocalStorage.setName(users.name);
   }
 
   void checkLogin() async {
@@ -139,7 +149,7 @@ class _LoginState extends State<Login> {
     if (passwordController.text.isNotEmpty &&
         usernameController.text.isNotEmpty) {
       var response = await http_service
-          .post("http://192.168.102.137:3001/auth/login", body: {
+          .post(loginUrl(), body: {
         "username": usernameController.text,
         "password": passwordController.text,
       });

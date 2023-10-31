@@ -3,6 +3,16 @@ import 'http.dart' as http_service;
 import 'common/api_endpoints.dart';
 
 class AuthService {
+  static Future<HTTPResponse> loginAsUser({required String name, required String password}) async {
+    return http_service.post(
+      loginUrl(),
+      body: {
+        'username' : name,
+        'password' : password
+      },
+      timeoutDuration: const Duration(seconds: 10)
+      );
+  }
   static Future<HTTPResponse> changeProfilePicture({required String base64}) {
     return http_service.put(
       changeProfilePictureUrl(),
@@ -20,11 +30,13 @@ class AuthService {
     );
   }
 
-  static Future<HTTPResponse> changeProfile({required String name}){
+  static Future<HTTPResponse> changeProfile({required String name,required String email, required int phone }){
     return http_service.put(
       changeProfileUrl(),
       body: {
-        'fullName': name
+        'name': name,
+        'email': email,
+        'phone': phone
       }
     );
   }

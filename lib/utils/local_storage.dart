@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
@@ -34,13 +36,31 @@ class LocalStorage {
     return _preferences.getString('name') ?? '';
   }
 
+  //Email
+  static Future setEmail(String email) async {
+    await _preferences.setString('email', email);
+  }
+
+  static String getEmail() {
+    return _preferences.getString('email') ?? '';
+  }
+
+  //Phone
+  static Future setPhone(int phone) async {
+    await _preferences.setInt('phone', phone);
+  }
+
+  static int? getPhone(){
+    return _preferences.getInt('phone');
+  }
+
   // Avatar
   static Future setAvatar(String avatar) async {
     await _preferences.setString('avatar', avatar);
   }
 
   static String getAvatar(){
-    return _preferences.getString('avatar') ?? '';
+    return _preferences.getString('avatar') ?? 'https://cdn4.iconfinder.com/data/icons/political-elections/50/48-512.png';
   }
 
 
