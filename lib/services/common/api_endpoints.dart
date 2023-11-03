@@ -13,7 +13,7 @@ String logoutUrl() => "$baseAuthUrl/auth/logout";
 String getTappers() => "$baseAuthUrl/users/penyadap";
 
 //nira
-String getNira() => "$baseAuthUrl/purchases";
+String getPurchase() => "$baseAuthUrl/purchases";
 String addNira() => "$baseAuthUrl/purchases";
 
 //garden control

@@ -12,7 +12,7 @@ class Auth {
     @JsonKey(name: "id")
     int? id;
     @JsonKey(name: "name")
-    String? name;
+    String name;
     @JsonKey(name: "nik")
     String? nik;
     @JsonKey(name: "phone")
@@ -34,7 +34,7 @@ class Auth {
 
     Auth({
         this.id,
-        this.name,
+        required this.name,
         this.nik,
         this.phone,
         this.address,

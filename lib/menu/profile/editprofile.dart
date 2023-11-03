@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:js_interop';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -16,8 +15,6 @@ import 'package:sabang/widgets/loading.dart';
 import 'package:sabang/widgets/erro_handler.dart';
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/widgets/pick_image.dart';
-import 'package:sabang/models/users.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -47,25 +44,26 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+    
   }
 
 
-  void getCred() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      token = pref.getString("login")??"";
-    });
-  }
+  // void getCred() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     token = pref.getString("login")??"";
+  //   });
+  // }
 
-  getUpdate() async {
-    var response = await AuthService.getProfile();
-    if (response.isSuccess) {
-      setState(() {
-        LocalStorage.setAvatar(response.data['avatar']);
-        avatar = LocalStorage.getAvatar();
-      });
-    }
-  }
+  // getUpdate() async {
+  //   var response = await AuthService.getProfile();
+  //   if (response.isSuccess) {
+  //     setState(() {
+  //       LocalStorage.setAvatar(response.data['avatar']);
+  //       avatar = LocalStorage.getAvatar();
+  //     });
+  //   }
+  // }
 
   takeImageAndCrop({required ImageSource imageSource}) async {
     XFile? image = await picker.pickImage(source: imageSource);
@@ -98,7 +96,7 @@ class _EditProfileState extends State<EditProfile> {
               await AuthService.changeProfilePicture(base64: imageBase64 ?? '');
           if (mounted) Navigator.pop(context);
           if (result.isSuccess && mounted) {
-            getUpdate();
+            // getUpdate();
           } else {
             errorDialogHandler(
                 context: context,
@@ -343,7 +341,7 @@ class _EditProfileState extends State<EditProfile> {
                 child: ElevatedButton(
                     onPressed: () async {
                       updateProfile();
-                      getUpdate();
+                      // getUpdate();
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFE0ADA2),
@@ -378,15 +376,13 @@ class _EditProfileState extends State<EditProfile> {
       body: body,
     );
     if (response.isSuccess) {
+      Navigator.pop(context);
       print("Sukses");
-      setState(() {
-        name;
-        mail;
-        phone;
-      });
+    
+      }
     } else {
       print("Gagal");
     }
   }
 }
-}
+

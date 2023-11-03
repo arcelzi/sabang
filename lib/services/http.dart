@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/local_storage.dart';
+
 enum HTTPResponseStatus { success, failed, timeout, error, noInternet }
 
 class HTTPResponse<T> {
@@ -81,8 +83,8 @@ class HTTPResponse<T> {
 // class HttpService {
 
 get token async {
-  final prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? '';
+  // final prefs = await SharedPreferences.getInstance();
+  String token = LocalStorage.getToken();
   // Box userBox = await Hive.openBox('user');
   // String token = userBox.get('authToken') ?? '';
   // log(token);
@@ -244,14 +246,16 @@ Future<HTTPResponse> patch(url, {Object? body, Duration timeoutDuration = const 
     // }
     // log('$connectivity, finally have internet');
     final response = await http.patch(
+        
         Uri.parse(url),
+        
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.authorizationHeader : await token
         },
         body: json.encode(body)
     ).timeout(timeoutDuration);
-
+    print(url);
     return responseCheck(response);
   } on TimeoutException catch(e) {
     log(e.toString());

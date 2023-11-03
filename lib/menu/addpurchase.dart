@@ -9,6 +9,7 @@ import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/models/users.dart';
 
 import 'package:location/location.dart';
+import 'package:sabang/utils/local_storage.dart';
 
 class AddPurchase extends StatefulWidget {
   const AddPurchase({super.key});
@@ -56,8 +57,13 @@ Future<LocationData> getLocation() async {
 // }
 
 class _AddPurchaseState extends State<AddPurchase> {
+  String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
+  @override
+  void setState(VoidCallback fn) {
+    if(mounted) super.setState(fn);
+  }
 
   @override
   void initState() {
@@ -142,7 +148,7 @@ class _AddPurchaseState extends State<AddPurchase> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 16),
+                            padding: const EdgeInsets.only(left: 15, top: 16),
                             child: Text(
                               'Penyadap',
                               style: TextStyle(
@@ -170,17 +176,20 @@ class _AddPurchaseState extends State<AddPurchase> {
                           SizedBox(
                             height: 6,
                           ),
-                          Text(
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15, top: 16),
+                            child:Text(
                             "PH",
                             style:
                                 TextStyle(fontFamily: FontPoppins, fontSize: 16),
+                          ), 
                           ),
                           SizedBox(
                             height: 6,
                           ),
                           buildPh(),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 16),
+                            padding: const EdgeInsets.only(left: 15, top: 16),
                             child: Text(
                               "Kadar Gula",
                               textAlign: TextAlign.justify,
@@ -191,7 +200,7 @@ class _AddPurchaseState extends State<AddPurchase> {
                           ),
                           buildKadarField(),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 16),
+                            padding: const EdgeInsets.only(left: 15, top: 16),
                             child: Text("Volume"),
                           ),
                           SizedBox(

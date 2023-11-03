@@ -5,6 +5,7 @@ import 'package:sabang/pages/gardencontrol_page.dart';
 import 'package:sabang/pages/purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
+import 'package:sabang/utils/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +21,7 @@ class Dashboard extends StatefulWidget {
   
 }
 class _DashboardState extends State<Dashboard>{
+  String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
     List menuList = [
     {
@@ -38,7 +40,6 @@ class _DashboardState extends State<Dashboard>{
     //   "color": Color(0xFF78937A)
     // },
   ];
-  String token = "";
   @override
   void initState() {
     super.initState();
@@ -48,7 +49,7 @@ class _DashboardState extends State<Dashboard>{
   void getCred() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-    token = pref.getString("login")??"";
+    token = pref.getString("dashboard")??"";
     });
   }
   

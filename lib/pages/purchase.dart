@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/addpurchase.dart';
-import 'package:http/http.dart' as http;
+import 'package:sabang/services/common/api_endpoints.dart';
+import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/models/nira.dart';
+import 'package:sabang/utils/local_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage({super.key});
@@ -16,28 +19,45 @@ class PurchasePage extends StatefulWidget {
 }
 
 class _PurchasePageState extends State<PurchasePage> {
+  String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
   final List<Nira> nira = [];
 
   Future<List<Nira?>> getNira() async {
-    Uri api = Uri.parse("http://192.168.102.182:3001/purchases");
-    var response = await http.get(api);
+    final response = await http_service.get(getPurchase());
 
     print(response.statusCode);
     if (response.statusCode == 200) {
-      var result = json.decode(response.body);
-      for (var item in result) {
-        nira.add(Nira.fromJson(item));
+      var result = response.data;
+      if (result is List) {
+        for (var item in result) {
+          nira.add(Nira.fromJson(item));
+        }
       }
+    } else {
+      print(response.data);
     }
     setState(() {});
     return nira;
   }
 
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
   void initState() {
     getNira();
+    getCred();
     super.initState();
+  }
+
+  void getCred() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      token = pref.getString("login") ?? "";
+    });
   }
 
   @override
@@ -96,49 +116,49 @@ class _PurchasePageState extends State<PurchasePage> {
               height: 20,
             ),
             Expanded(
-                child: ListView.builder(
-              itemBuilder: (context, index) {
-                return Card(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      color: Color(0xFF78937A),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "PH : " + nira[index].ph.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            "BRIX : " + nira[index].sugarLevel.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            "Volume : " + nira[index].volume.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            "Amount: " + nira[index].amount.toString(),
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ]),
-                  ),
-                ));
-              },
-              itemCount: nira.length,
-            ),
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return Card(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xFF78937A),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "PH : " + nira[index].ph.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "BRIX : " + nira[index].sugarLevel.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "Volume : " + nira[index].volume.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "Amount: " + nira[index].amount.toString(),
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ]),
+                    ),
+                  ));
+                },
+                itemCount: nira.length,
+              ),
             )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: ((context) => AddPurchase())));
+          Navigator.push(context,
+              MaterialPageRoute(builder: ((context) => AddPurchase())));
         },
         backgroundColor: Color(0xFFE5E1E1),
         child: Icon(FontAwesomeIcons.plus),

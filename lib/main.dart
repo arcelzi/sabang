@@ -43,7 +43,7 @@ class MyApp extends StatefulWidget {
       if (result.isSuccess) {
         var user = Auth.fromJson(result.data);
         LocalStorage.setAvatar(user.avatar);
-        LocalStorage.setToken(user.token as String);
+        LocalStorage.setToken(user.token);
         LocalStorage.setUserId(user.id as String);
         LocalStorage.setName(user.name as String);
       }

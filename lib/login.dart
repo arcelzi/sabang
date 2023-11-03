@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/services/common/api_endpoints.dart';
 
+import 'models/auth.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -18,16 +19,18 @@ class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  
+
   @override
   void initState() {
     super.initState();
     checkLogin();
   }
 
-  saveUserData(Users users) {
+  saveUserData(Auth users) {
+    String token = users.token;
     LocalStorage.setAvatar(users.avatar);
     LocalStorage.setName(users.name);
+    LocalStorage.setToken(token);
   }
 
   void checkLogin() async {
@@ -109,10 +112,10 @@ class _LoginState extends State<Login> {
                       ),
                       labelText: 'Password',
                       hintText: 'Enter a Password'),
-                      validator: (value) {
-                            if (value!.isEmpty) return 'Password tidak boleh kosong';
-                            return null;
-                          },
+                  validator: (value) {
+                    if (value!.isEmpty) return 'Password tidak boleh kosong';
+                    return null;
+                  },
                 ),
               ),
               SizedBox(
@@ -148,11 +151,11 @@ class _LoginState extends State<Login> {
   void login() async {
     if (passwordController.text.isNotEmpty &&
         usernameController.text.isNotEmpty) {
-      var response = await http_service
-          .post(loginUrl(), body: {
+      var response = await http_service.post(loginUrl(), body: {
         "username": usernameController.text,
         "password": passwordController.text,
       });
+
       // await http.post(Uri.parse("http://192.168.102.10:3001/auth/login"),
       //     body: ({
       //       "username": usernameController.text,
@@ -163,8 +166,13 @@ class _LoginState extends State<Login> {
         // print("Login Token"+ body["token"]);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Berhasil Login")));
-
-        gotoDashboard(body['token']);
+        var user = Auth.fromJson(body);
+        await saveUserData(user);
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => Dashboard(),
+            ),
+            (route) => false);
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Username/password salah")));
@@ -175,10 +183,10 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void gotoDashboard(String token) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('login', token);
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Dashboard()), (route) => false);
-  }
+  // void gotoDashboard(String token) async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   await pref.setString('login', token);
+  //   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+  //       MaterialPageRoute(builder: (context) => Dashboard()), (route) => false);
+  // }
 }
