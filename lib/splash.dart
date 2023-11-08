@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sabang/utils/local_storage.dart';
+import 'package:sabang/view/dashboard.dart';
 
 
 import 'login.dart';
@@ -14,13 +16,17 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  String token = LocalStorage.getToken();
+  
   @override
   void initState() {
     super.initState();
+    print('lumba');
+    print(token);
     Timer(
         Duration(seconds: 3),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Login())));
+            context, MaterialPageRoute(builder: (context) => token == '' ? Login() : Dashboard())));
   }
 
   final String FontPoppins = 'FontPoppins';

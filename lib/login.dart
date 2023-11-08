@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sabang/models/users.dart';
+import 'package:provider/provider.dart';
 import 'package:sabang/utils/local_storage.dart';
 import 'package:sabang/view/dashboard.dart';
 // import 'package:http/http.dart' as http;
@@ -8,6 +8,7 @@ import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/services/common/api_endpoints.dart';
 
 import 'models/auth.dart';
+import 'network.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -24,6 +25,13 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     checkLogin();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
   }
 
   saveUserData(Auth users) {
@@ -88,6 +96,13 @@ class _LoginState extends State<Login> {
                       ),
                       labelText: 'Username',
                       hintText: 'Enter a Username'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Username tidak boleh kosong";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {},
                 ),
               ),
               SizedBox(
@@ -113,9 +128,12 @@ class _LoginState extends State<Login> {
                       labelText: 'Password',
                       hintText: 'Enter a Password'),
                   validator: (value) {
-                    if (value!.isEmpty) return 'Password tidak boleh kosong';
+                    if (value == null || value.isEmpty){
+                      return 'Password tidak boleh kosong';
+                    } 
                     return null;
                   },
+                  onChanged: (value){},
                 ),
               ),
               SizedBox(
@@ -130,8 +148,11 @@ class _LoginState extends State<Login> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF78937A)),
-                  onPressed: () {
-                    login();
+                  onPressed: () async {
+                    if(_formKey.currentState!.validate()) {
+                      login();
+                    }
+                    
                   },
                   child: Text("Sign in",
                       style: TextStyle(
@@ -168,11 +189,15 @@ class _LoginState extends State<Login> {
             .showSnackBar(SnackBar(content: Text("Berhasil Login")));
         var user = Auth.fromJson(body);
         await saveUserData(user);
-        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        if (mounted) {
+          Provider.of<AppState>(context, listen: false).loggedIn();
+           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => Dashboard(),
+              builder: (context) => Dashboard() 
             ),
             (route) => false);
+        }
+       
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Username/password salah")));

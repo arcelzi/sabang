@@ -48,6 +48,15 @@ class AuthService {
       timeoutDuration: const Duration(seconds: 10)
     );
   }
+
+  static Future<HTTPResponse> getGardenControl() {
+  return http_service.get(
+    checkGardenControl(),
+    timeoutDuration: const Duration(seconds: 10)
+  );
 }
+}
+
+
 
   

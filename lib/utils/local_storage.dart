@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,6 +44,7 @@ class LocalStorage {
   static String getEmail() {
     return _preferences.getString('email') ?? '';
   }
+
 
   //Phone
   static Future setPhone(int phone) async {

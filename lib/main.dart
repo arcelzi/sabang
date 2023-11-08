@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sabang/services/auth_service.dart';
 import 'package:sabang/splash.dart';
 import 'package:sabang/utils/local_storage.dart';
 
 import 'models/auth.dart';
+import 'network.dart';
 
 
 void main() async {
@@ -12,7 +14,11 @@ void main() async {
   await LocalStorage.init(); 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  runApp(MyApp(token: LocalStorage.getToken()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: ((context) => AppState()))
+  ],  
+  child: MyApp(token: LocalStorage.getToken()),
+  ));
 }
 
 
@@ -35,18 +41,8 @@ class MyApp extends StatefulWidget {
       super.initState();
     }
 
-    loginAsUser() async {
-      var result = await AuthService.loginAsUser(
-        name: username, 
-        password: password
-      );
-      if (result.isSuccess) {
-        var user = Auth.fromJson(result.data);
-        LocalStorage.setAvatar(user.avatar);
-        LocalStorage.setToken(user.token);
-        LocalStorage.setUserId(user.id as String);
-        LocalStorage.setName(user.name as String);
-      }
+    void initial() {
+      Provider.of<AppState>(context, listen: false).init();
     }
 
   // This widget is the root of your application.

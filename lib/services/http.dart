@@ -7,7 +7,7 @@ import 'dart:io';
 // import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 import '../utils/local_storage.dart';
 
@@ -87,7 +87,7 @@ get token async {
   String token = LocalStorage.getToken();
   // Box userBox = await Hive.openBox('user');
   // String token = userBox.get('authToken') ?? '';
-  // log(token);
+  log(token);
   return 'Bearer $token';
 }
 

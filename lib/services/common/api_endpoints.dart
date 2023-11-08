@@ -19,4 +19,6 @@ String addNira() => "$baseAuthUrl/purchases";
 //garden control
 String getGardenControl() => "$baseAuthUrl/garden-controls";
 String addGardenControl() => "$baseAuthUrl/garden-controls";
+String checkGardenControl() => "$baseAuthUrl/checklists/";
+
 
