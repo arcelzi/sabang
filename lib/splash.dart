@@ -21,7 +21,7 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    print('lumba');
+    // print('lumba');
     print(token);
     Timer(
         Duration(seconds: 3),

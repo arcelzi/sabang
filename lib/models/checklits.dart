@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
-part 'search.g.dart';
+part 'checklits.g.dart';
 
 List<Check> checkFromJson(String str) => List<Check>.from(json.decode(str).map((x) => Check.fromJson));
 

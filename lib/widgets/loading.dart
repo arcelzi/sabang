@@ -6,6 +6,5 @@ showLoadingDialogNotdismissible(context){
   builder: ((context) => CircularProgressIndicator(
     color: Colors.grey,
   )),
-  barrierDismissible: false,
   );
 }

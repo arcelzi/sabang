@@ -75,7 +75,7 @@ class _AddPurchaseState extends State<AddPurchase> {
   getPenyadap() async {
     try {
       final response =
-          await http_service.get('http://192.168.102.182:3001/users/penyadap');
+          await http_service.get('http://192.168.102.151:3001/users/penyadap');
       if (response.isSuccess) {
         print(response.data);
         for (var item in response.data) {

@@ -20,6 +20,7 @@ class PurchasePage extends StatefulWidget {
 
 class _PurchasePageState extends State<PurchasePage> {
   String token = LocalStorage.getToken();
+  final TextEditingController searchController = TextEditingController();
   final String FontPoppins = 'FontPoppins';
   final List<Nira> nira = [];
 
@@ -59,6 +60,14 @@ class _PurchasePageState extends State<PurchasePage> {
       token = pref.getString("login") ?? "";
     });
   }
+
+  Future<void> _refresh() async {
+    await Future.delayed(Duration(seconds: 2));
+
+    setState(() {
+      getNira();
+    });
+  }
   
 
   @override
@@ -83,77 +92,81 @@ class _PurchasePageState extends State<PurchasePage> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            TextField(
-              onChanged: (value) => (),
-              decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Color(0xFFE9E9E9),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide:
-                          BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide:
-                          BorderSide(color: Color(0xFFE9E9E9), width: 0)),
-                  hintText: 'Search',
-                  hintStyle: TextStyle(
-                      fontFamily: FontPoppins,
-                      fontSize: 14,
-                      color: Color(0xFFA9A9A9)),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: Color(0xFFA9A9A9),
-                  )),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return Card(
-                      child: Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xFF78937A),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "PH : " + nira[index].ph.toString(),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "BRIX : " + nira[index].sugarLevel.toString(),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "Volume : " + nira[index].volume.toString(),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "Amount: " + nira[index].amount.toString(),
-                              style: TextStyle(color: Colors.white),
-                            )
-                          ]),
-                    ),
-                  ));
-                },
-                itemCount: nira.length,
+      body: RefreshIndicator(
+        onRefresh: _refresh ,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            )
-          ],
+              // TextField(
+              //   controller: searchController,
+              //   onChanged: (value) => (),
+              //   decoration: InputDecoration(
+              //       filled: true,
+              //       fillColor: Color(0xFFE9E9E9),
+              //       focusedBorder: OutlineInputBorder(
+              //           borderRadius: BorderRadius.circular(30),
+              //           borderSide:
+              //               BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+              //       enabledBorder: OutlineInputBorder(
+              //           borderRadius: BorderRadius.circular(30),
+              //           borderSide:
+              //               BorderSide(color: Color(0xFFE9E9E9), width: 0)),
+              //       hintText: 'Search',
+              //       hintStyle: TextStyle(
+              //           fontFamily: FontPoppins,
+              //           fontSize: 14,
+              //           color: Color(0xFFA9A9A9)),
+              //       prefixIcon: Icon(
+              //         Icons.search_rounded,
+              //         color: Color(0xFFA9A9A9),
+              //       )),
+              // ),
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Card(
+                        child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xFF78937A),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "PH : " + nira[index].ph.toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                "BRIX : " + nira[index].sugarLevel.toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                "Volume : " + nira[index].volume.toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                "Amount: " + nira[index].amount.toString(),
+                                style: TextStyle(color: Colors.white),
+                              )
+                            ]),
+                      ),
+                    ));
+                  },
+                  itemCount: nira.length,
+                ),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
