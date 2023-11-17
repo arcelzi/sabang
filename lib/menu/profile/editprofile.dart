@@ -32,7 +32,7 @@ class _EditProfileState extends State<EditProfile> {
   var phoneController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   String? imageBase64;
-  late Uint8List imageBytes;
+  Uint8List? imageBytes;
 
 
 
@@ -80,7 +80,16 @@ class _EditProfileState extends State<EditProfile> {
             AndroidUiSettings(
                 toolbarTitle: 'Crop Image',
                 statusBarColor: Colors.black,
-                activeControlsWidgetColor: Color(0xFF78937A))
+                activeControlsWidgetColor: Color(0xFF78937A)),
+            WebUiSettings(
+              context: context,
+              presentStyle: CropperPresentStyle.dialog,
+              boundary: CroppieBoundary(width: 100, height: 100),
+              viewPort: CroppieViewPort(width: 100, height: 100, type: 'circle'),
+              enableExif: true,
+              enableZoom: true,
+              showZoomer: true,
+              )
           ]);
       if (croppedFile != null) {
         File croppedImage = File(croppedFile.path);
@@ -139,6 +148,14 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               Stack(
                 children: [
+                  imageBytes != null ?
+                  Container(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      radius: 72,
+                      backgroundImage: MemoryImage(imageBytes!),
+                    ),
+                  ) :
                   Container(
                     alignment: Alignment.center,
                     child: CircleAvatar(
@@ -149,16 +166,16 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Positioned(
                     bottom: 0,
-                    right: 125,
+                    right: 145,
                     child: Container(
-                      width: 35,
-                      height: 35,
+                      width: 45,
+                      height: 45,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           color: Color(0xFFE0ADA2)),
                       child: IconButton(
                         icon: Icon(Icons.camera_alt),
-                        iconSize: 18,
+                        iconSize: 25,
                         onPressed: () async {
                           var imageSource = await showModalBottomSheet(
                               barrierColor: Colors.black12,
@@ -358,7 +375,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void updateProfile() async {
+  Future <void> updateProfile() async {
     if(formKey.currentState!.validate()){
     showLoadingDialogNotdismissible(context);
     final name = nameController.text;

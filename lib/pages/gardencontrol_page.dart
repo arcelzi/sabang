@@ -4,6 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:sabang/menu/addgardencontrol.dart';
+import 'package:sabang/services/common/api_endpoints.dart';
+
+import 'package:sabang/services/http.dart' as http_service;
+import '../models/garden_control.dart';
+import '../utils/local_storage.dart';
 
 
 
@@ -15,6 +20,26 @@ class GardenControlPage extends StatefulWidget {
 }
 
 class _GardenControlPageState extends State<GardenControlPage> {
+  String token = LocalStorage.getToken();
+  final List<GardenControl> gardenControl= [];
+
+  Future<List<GardenControl?>> getGarden() async{
+    final response = await http_service.get(getGardenControl());
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      var result = response.data;
+      if (result is List) {
+        for (var item in result) {
+          gardenControl.add(GardenControl.fromJson(item));
+        }
+      }
+    } else {
+      print(response.data);
+    }
+    setState(() {});
+    return gardenControl;
+  }
   final String FontPoppins = 'FontPoppins';
   final List<gardencontrol> garden = [
     gardencontrol(
@@ -23,6 +48,12 @@ class _GardenControlPageState extends State<GardenControlPage> {
         question3: "Yes",
         foto: 'assets/images/aren.png')
   ];
+  
+  @override 
+  void initState() {
+    getGarden();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,41 +93,16 @@ class _GardenControlPageState extends State<GardenControlPage> {
             )
           ],
         ),
-        body: ListView(
-          children: garden.map((result) {
-            return Card(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 200,
-                      height: 200,
-                      child: Image(image: AssetImage(result.foto)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 70,
-                          ),
-                          Text('Question 1 : ' + result.question1),
-                          Text('Question 2 : ' + result.question2),
-                          Text('Question 3 : ' +result.question3),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
+        body: ListView.builder(
+          itemBuilder: (context, index) {
+            
+          }),
+          toList(),
         ));
   }
 }
+
+
 
 class gardencontrol {
   final String question1;

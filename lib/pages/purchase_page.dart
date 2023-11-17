@@ -20,7 +20,7 @@ class PurchasePage extends StatefulWidget {
 
 class _PurchasePageState extends State<PurchasePage> {
   String token = LocalStorage.getToken();
-  final TextEditingController searchController = TextEditingController();
+  // final TextEditingController searchController = TextEditingController();
   final String FontPoppins = 'FontPoppins';
   final List<Nira> nira = [];
 

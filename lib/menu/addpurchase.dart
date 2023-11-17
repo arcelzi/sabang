@@ -251,7 +251,7 @@ class _AddPurchaseState extends State<AddPurchase> {
     );
   }
 
-  Future<void> submitNira() async {
+  void submitNira() async {
     if (_formKey.currentState!.validate()) {
       getLocation().then((value) {
         print(value);
