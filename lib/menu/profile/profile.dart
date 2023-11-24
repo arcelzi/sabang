@@ -1,5 +1,3 @@
-
-
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -12,8 +10,6 @@ import 'package:sabang/utils/local_storage.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -24,6 +20,8 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String token = LocalStorage.getToken();
   String name = LocalStorage.getName();
+  String email = LocalStorage.getEmail();
+  String phone = LocalStorage.getPhone();
   String avatar = LocalStorage.getAvatar();
   String? imageBase64;
   late Uint8List imageBytes;
@@ -32,10 +30,10 @@ class _ProfileState extends State<Profile> {
     if (token.contains('login:')) return;
     getUpdate();
   }
-  
+
   getUpdate() async {
     var response = await AuthService.getProfile();
-    if(response.isSuccess) {
+    if (response.isSuccess) {
       setState(() {
         LocalStorage.setAvatar(response.data['avatar']);
         avatar = LocalStorage.getAvatar();
@@ -43,11 +41,11 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  
   @override
-  void setState(VoidCallback fn){
-    if(mounted) super.setState(fn);
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
   }
+
   @override
   void initState() {
     super.initState();
@@ -57,10 +55,9 @@ class _ProfileState extends State<Profile> {
   void getCred() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-    token = pref.getString("login")??"";
+      token = pref.getString("login") ?? "";
     });
   }
-
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +116,10 @@ class _ProfileState extends State<Profile> {
                   title: "Pengaturan",
                   icon: FontAwesomeIcons.gear,
                   onPress: () {
-                    Navigator.push(context, MaterialPageRoute(builder: ((context) => EditProfile())));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => EditProfile())));
                   },
                 ),
                 ProfileMenu(
@@ -132,27 +132,38 @@ class _ProfileState extends State<Profile> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                                content: Row(
-                              children: [
-                                Text("Are you Sure?"),
-                                TextButton(
-                                    onPressed: () async {
-                                      SharedPreferences pref =
-                                          await SharedPreferences.getInstance();
-                                      await pref.clear();
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                          MaterialPageRoute(
-                                            builder: (context) => Login(),
-                                          ),
-                                          (route) => false);
-                                    },
-                                    child: const Text("Yes")),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text("No"))
-                              ],
+                                content: IntrinsicHeight(
+                              child: Column(
+                                children: [
+                                  Text("Are you Sure?"),
+                                  Expanded(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () async {
+                                            SharedPreferences pref =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            await pref.clear();
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Login(),
+                                                    ),
+                                                    (route) => false);
+                                          },
+                                          child: const Text("Yes")),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("No"))
+                                    ],
+                                  ))
+                                ],
+                              ),
                             ));
                           });
                     })

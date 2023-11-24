@@ -1,0 +1,100 @@
+// import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sabang/models/garden_control.dart';
+// import 'package:sabang/pages/gardencontrol_page.dart';
+// import 'package:sabang/services/http.dart' as http_service;
+
+// import '../services/common/api_endpoints.dart';
+
+// class Items {
+//   GardenControl items;
+
+//   Items({required this.items});
+// }
+
+class DetailGarden extends StatefulWidget {
+  final GardenControl garden;
+
+  DetailGarden({required this.garden});
+
+  @override
+  State<DetailGarden> createState() => _DetailGardenState();
+}
+
+class _DetailGardenState extends State<DetailGarden> {
+  late GardenControl _garden;
+  final List<GardenControl> gardenControl = [];
+  final List<GardenControlItems> itemGarden = [];
+
+  // Future<void> getDetail() async {
+  //   try {
+  //     final response = await http_service.get(getGardenControl());
+  //     if (response.isSuccess) {
+  //       print(response.data);
+  //       for (var item in response.data) {
+  //         print(item);
+  //         gardenControl.add(GardenControl.fromJson(item));
+  //       }
+  //       setState(() {});
+  //     }
+  //   } on SocketException {
+  //     throw Exception('No internet');
+  //   } catch (e) {
+  //     print(e);
+  //     throw Exception('Error mengambil data');
+  //   }
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    _garden = widget.garden;
+    // getDetail();
+  }
+
+  // Future<void> _refresh() async {
+  //   await Future.delayed(Duration(seconds: 2));
+
+  //   setState(() {});
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Color(0xFFF5F6FB),
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                FontAwesomeIcons.angleLeft,
+                color: Colors.black,
+              )),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            'Detail',
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (_garden.items.isNotEmpty) Text('Item Details : '),
+              for (GardenControlItems detail in _garden.items)
+                ListTile(
+                  title: Text('${detail.title} : ${detail.value}'),
+                  subtitle: Text('${detail.type}'),
+                )
+            ],
+          ),
+        ));
+  }
+}

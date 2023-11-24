@@ -31,6 +31,7 @@ class _EditProfileState extends State<EditProfile> {
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
   final ImagePicker picker = ImagePicker();
+
   String? imageBase64;
   Uint8List? imageBytes;
 
@@ -44,6 +45,9 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+    nameController.text = LocalStorage.getName();
+    emailController.text = LocalStorage.getEmail();
+    phoneController.text = LocalStorage.getPhone();
     
   }
 
@@ -164,99 +168,107 @@ class _EditProfileState extends State<EditProfile> {
                       backgroundColor: Colors.white,
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 145,
-                    child: Container(
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Color(0xFFE0ADA2)),
-                      child: IconButton(
-                        icon: Icon(Icons.camera_alt),
-                        iconSize: 25,
-                        onPressed: () async {
-                          var imageSource = await showModalBottomSheet(
-                              barrierColor: Colors.black12,
-                              backgroundColor: Colors.transparent,
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) {
-                                return BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                                  child: Container(
-                                    padding: const EdgeInsets.only(bottom: 16),
-                                    decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(12))),
-                                    child: SafeArea(
-                                        top: false,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 10),
-                                              height: 6,
-                                              width: 46,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  color: Colors.white),
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 24),
-                                              child: Row(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                            // alignment: Alignment.center,
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: Color(0xFFE0ADA2)),
+                            child: IconButton(
+                              icon: Icon(Icons.camera_alt),
+                              iconSize: 25,
+                              onPressed: () async {
+                                var imageSource = await showModalBottomSheet(
+                                    barrierColor: Colors.black12,
+                                    backgroundColor: Colors.transparent,
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return BackdropFilter(
+                                        filter:
+                                            ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                                        child: Container(
+                                          padding: const EdgeInsets.only(bottom: 16),
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(12),
+                                                  topRight: Radius.circular(12))),
+                                          child: SafeArea(
+                                              top: false,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                    MainAxisAlignment.end,
                                                 children: [
-                                                  photoMenu(
-                                                    text: 'Kamera',
-                                                    icon: Icon(
-                                                      Icons.camera_alt,
-                                                      color: Colors.black,
-                                                    ),
-                                                    onTap: () {
-                                                      Navigator.pop(context,
-                                                          ImageSource.camera);
-                                                    },
+                                                  Container(
+                                                    margin: const EdgeInsets.only(
+                                                        top: 10),
+                                                    height: 6,
+                                                    width: 46,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(20),
+                                                        color: Colors.white),
                                                   ),
-                                                  photoMenu(
-                                                      text: 'Gallery',
-                                                      icon: Icon(
-                                                        Icons.image,
-                                                        color: Colors.black,
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(
-                                                            context,
-                                                            ImageSource
-                                                                .gallery);
-                                                      })
+                                                  Container(
+                                                    margin: const EdgeInsets.only(
+                                                        top: 24),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        photoMenu(
+                                                          text: 'Kamera',
+                                                          icon: Icon(
+                                                            Icons.camera_alt,
+                                                            color: Colors.black,
+                                                          ),
+                                                          onTap: () {
+                                                            Navigator.pop(context,
+                                                                ImageSource.camera);
+                                                          },
+                                                        ),
+                                                        photoMenu(
+                                                            text: 'Gallery',
+                                                            icon: Icon(
+                                                              Icons.image,
+                                                              color: Colors.black,
+                                                            ),
+                                                            onTap: () {
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  ImageSource
+                                                                      .gallery);
+                                                            })
+                                                      ],
+                                                    ),
+                                                  )
                                                 ],
-                                              ),
-                                            )
-                                          ],
-                                        )),
-                                  ),
-                                );
-                              });
-                          if (imageSource != null)
-                            takeImageAndCrop(imageSource: imageSource);
-                        },
-                        color: Colors.black,
-                      ),
+                                              )),
+                                        ),
+                                      );
+                                    });
+                                if (imageSource != null)
+                                  takeImageAndCrop(imageSource: imageSource);
+                              },
+                              color: Colors.black,
+                            ),
+                          ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
                 ],
               ),
               const SizedBox(
@@ -377,7 +389,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future <void> updateProfile() async {
     if(formKey.currentState!.validate()){
-    showLoadingDialogNotdismissible(context);
+      // var result = await AuthService.changeProfile(name: editName , email: email, phone: phone);
     final name = nameController.text;
     final mail = emailController.text;
     final phone = num.parse(phoneController.text);
@@ -393,11 +405,12 @@ class _EditProfileState extends State<EditProfile> {
       body: body,
     );
     if (response.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sukses')));
       Navigator.pop(context);
       print("Sukses");
-    
       }
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal')));
       print("Gagal");
     }
   }

@@ -38,6 +38,8 @@ class _LoginState extends State<Login> {
     String token = users.token;
     LocalStorage.setAvatar(users.avatar);
     LocalStorage.setName(users.name);
+    LocalStorage.setEmail(users.email);
+    LocalStorage.setPhone(users.phone);
     LocalStorage.setToken(token);
   }
 

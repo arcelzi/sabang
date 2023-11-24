@@ -1,13 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'dart:convert';
+
 
 part 'garden_control.g.dart';
 
-List<GardenControl> gardenControlFromJson(String str) => List<GardenControl>.from(json.decode(str).map((x) => GardenControl.fromJson(x)));
 
-String gardenControlToJson(List<GardenControl> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class GardenControl {
     @JsonKey(name: "penyadapId")
     String? penyadapId;
@@ -21,6 +18,8 @@ class GardenControl {
     num? lng;
     @JsonKey(name: "id")
     int? id;
+    final List<GardenControlItems> items;
+    
 
     GardenControl({
         this.penyadapId,
@@ -29,9 +28,33 @@ class GardenControl {
         this.lat,
         this.lng,
         this.id,
+        required this.items
     });
 
     factory GardenControl.fromJson(Map<String, dynamic> json) => _$GardenControlFromJson(json);
 
     Map<String, dynamic> toJson() => _$GardenControlToJson(this);
+}
+
+
+
+
+
+@JsonSerializable()
+class GardenControlItems {
+    int id;
+    String title;
+    String value;
+    String type;
+
+    GardenControlItems({
+      required this.id,
+      required this.title,
+      required this.value,
+      required this.type
+    });
+    
+    factory GardenControlItems.fromJson(Map<String, dynamic> json) => _$GardenControlItemsFromJson(json);
+
+    Map<String, dynamic> toJson() => _$GardenControlItemsToJson(this);
 }

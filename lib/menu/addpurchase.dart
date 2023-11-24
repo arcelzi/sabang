@@ -75,7 +75,7 @@ class _AddPurchaseState extends State<AddPurchase> {
   getPenyadap() async {
     try {
       final response =
-          await http_service.get('http://192.168.102.151:3001/users/penyadap');
+          await http_service.get(getTappers());
       if (response.isSuccess) {
         print(response.data);
         for (var item in response.data) {
@@ -122,10 +122,10 @@ class _AddPurchaseState extends State<AddPurchase> {
             GestureDetector(
               onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
               child: Container(
-                width: 420,
+                width: 400,
                 height: 450,
-                margin: EdgeInsets.symmetric(horizontal: 80),
-                padding: EdgeInsets.only(top: 5, left: 16, right: 16),
+                // margin: EdgeInsets.symmetric(horizontal: 80),
+                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -213,7 +213,7 @@ class _AddPurchaseState extends State<AddPurchase> {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             Container(
               margin: EdgeInsets.only(right: 31),

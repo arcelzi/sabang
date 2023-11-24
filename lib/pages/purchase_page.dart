@@ -157,6 +157,10 @@ class _PurchasePageState extends State<PurchasePage> {
                               Text(
                                 "Amount: " + nira[index].amount.toString(),
                                 style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                'Tanggal : ' + nira[index].timestamp.toString(),
+                                style: TextStyle(color: Colors.white),
                               )
                             ]),
                       ),

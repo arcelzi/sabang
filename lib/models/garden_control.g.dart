@@ -16,6 +16,9 @@ GardenControl _$GardenControlFromJson(Map<String, dynamic> json) =>
       lat: json['lat'] as num?,
       lng: json['lng'] as num?,
       id: json['id'] as int?,
+      items: (json['items'] as List<dynamic>)
+          .map((e) => GardenControlItems.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$GardenControlToJson(GardenControl instance) =>
@@ -26,4 +29,21 @@ Map<String, dynamic> _$GardenControlToJson(GardenControl instance) =>
       'lat': instance.lat,
       'lng': instance.lng,
       'id': instance.id,
+      'items': instance.items,
+    };
+
+GardenControlItems _$GardenControlItemsFromJson(Map<String, dynamic> json) =>
+    GardenControlItems(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      value: json['value'] as String,
+      type: json['type'] as String,
+    );
+
+Map<String, dynamic> _$GardenControlItemsToJson(GardenControlItems instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'value': instance.value,
+      'type': instance.type,
     };

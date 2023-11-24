@@ -30,7 +30,7 @@ class AuthService {
     );
   }
 
-  static Future<HTTPResponse> changeProfile({required String name,required String email, required int phone }){
+  static Future<HTTPResponse> changeProfile({required String name,required String email, required String phone }){
     return http_service.put(
       changeProfileUrl(),
       body: {

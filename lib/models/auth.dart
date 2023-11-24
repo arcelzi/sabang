@@ -16,11 +16,11 @@ class Auth {
     @JsonKey(name: "nik")
     String? nik;
     @JsonKey(name: "phone")
-    String? phone;
+    String phone;
     @JsonKey(name: "address")
     String? address;
     @JsonKey(name: "email")
-    String? email;
+    String email;
     @JsonKey(name: "username")
     String? username;
     @JsonKey(name: "villageId")
@@ -36,9 +36,9 @@ class Auth {
         this.id,
         required this.name,
         this.nik,
-        this.phone,
+        required this.phone,
         this.address,
-        this.email,
+        required this.email,
         this.username,
         this.villageId,
         this.avatar,

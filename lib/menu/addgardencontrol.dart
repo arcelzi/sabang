@@ -1,9 +1,10 @@
 
 // import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -12,9 +13,12 @@ import 'package:location/location.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
 // import 'package:sabang/view/selectphoto.dart';
 import 'package:sabang/services/http.dart' as http_service;
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 // import 'dart:html' as html;
 
 import '../models/checklits.dart';
+import '../models/users.dart';
 import '../utils/local_storage.dart';
 
 class Kuisioner {
@@ -55,10 +59,32 @@ class _AddGardenState extends State<AddGarden> {
   final _formKey = GlobalKey<FormState>();
   final List<Check> checks = [];
   String selectValue = '';
-  // File? _image;
+  File? _image;
   Map<String, TextEditingController> controllers = {};
   final List<Kuisioner> kuisioneResult = [];
+  // DateTime creationDate = DateTime.now();
   // List<int>? _selectedFile;
+
+
+  Future<void> uploadImage() async {
+    if (_image != null) {
+      try {
+        var request = http.MultipartRequest('POST', Uri.parse(addGardenControl()));
+        request.files.add(http.MultipartFile('image', http.ByteStream(_image!.openRead()), await _image!.length(), filename: 'image.jpg', contentType: MediaType('image', 'jpeg')));
+        var response = await request.send();
+
+        if (response.statusCode == 200) {
+          print('Gambar berhasil diunggah');
+        } else {
+          print('Gagal menggunggah gambar. Status: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } 
+  }
+
+  
  
 
   Future<void> getCheck() async {
@@ -88,6 +114,7 @@ class _AddGardenState extends State<AddGarden> {
   void initState() {
     super.initState();
     getCheck();
+    getPenyadap();
   }
 
   @override
@@ -257,6 +284,25 @@ class _AddGardenState extends State<AddGarden> {
   //           })));
   // }
 
+  List<Users> listPenyadap = [];
+  getPenyadap() async {
+    try {
+      final response = await http_service.get(getTappers());
+      if (response.isSuccess) {
+        print(response.data);
+        for (var item in response.data) {
+          print(item);
+          listPenyadap.add(Users(id: item['id'], name: item['name'], username: item['username']));
+        }
+        setState(() {});
+      }
+    } on SocketException {
+      throw Exception('No internet');
+    } catch (e) {
+      throw Exception('Error mengambil data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,6 +352,29 @@ class _AddGardenState extends State<AddGarden> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, top: 16),
+                        child: Text(
+                          'Penyadap',
+                          style: TextStyle(
+                            fontFamily: FontPoppins,
+                            fontSize: 16
+                          ),
+                        ),
+                        ),
+                      DropdownButton(
+                        hint: Text('Pilih Penyadap'),
+                        isExpanded: true,
+                        value: selectedPenyadap,
+                        items: listPenyadap.map((e) {
+                          return DropdownMenuItem(
+                            value: e.id, child: Text(e.name.toString()));
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPenyadap = value as int;
+                          });
+                        }),
                       // for (var check in checks) ...[
                       //   Text(check.title, ),
                       //   check.type == 'text'
@@ -411,7 +480,8 @@ class _AddGardenState extends State<AddGarden> {
                   onPressed: () {
                     print(kuisioneResult.map(
                         (e) => {'title': e.question.title, 'value': e.value}));
-                    Navigator.pop(context);
+                    submitGarden();
+                    uploadImage();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFE0ADA2),
@@ -440,8 +510,30 @@ class _AddGardenState extends State<AddGarden> {
       });
 
       var currentLocation = await getLocation();
+      // final item = {'items': ['id', 'gardenControlId', 'title', 'value', 'note']};
+      final data = {'penyadaId': selectedPenyadap.toString(),
+        'icsId': 0,
+        'lat': currentLocation.latitude,
+        'lng': currentLocation.longitude,
+        'items': [{'id', 'gardenControlId', 'title', 'value', 'note'}]
+      };
+      print(data);
+
+      final response = await http_service.post(addGardenControl(),
+      body: jsonEncode(data)
+      );
+      if (response.isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sukses')));
+        Navigator.pop(context);
+        print('Sukses');
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal')));
+      print('Gagal');
     }
   }
+
+  int? selectedPenyadap = null;
 
   // Container buildPhoto() {
   //   return Container(

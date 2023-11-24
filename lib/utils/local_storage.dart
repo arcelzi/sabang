@@ -47,12 +47,12 @@ class LocalStorage {
 
 
   //Phone
-  static Future setPhone(int phone) async {
-    await _preferences.setInt('phone', phone);
+  static Future setPhone(String phone) async {
+    await _preferences.setString('phone', phone);
   }
 
-  static int? getPhone(){
-    return _preferences.getInt('phone');
+  static String getPhone(){
+    return _preferences.getString('phone') ?? '';
   }
 
   // Avatar
