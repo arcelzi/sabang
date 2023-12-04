@@ -1,7 +1,8 @@
-
 // import 'dart:convert';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
@@ -10,14 +11,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
+import 'package:sabang/services/auth_service.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
 // import 'package:sabang/view/selectphoto.dart';
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:sabang/widgets/erro_handler.dart';
+import 'package:sabang/widgets/loading.dart';
+import 'package:sabang/widgets/pick_image.dart';
 // import 'dart:html' as html;
 
 import '../models/checklits.dart';
+import '../models/garden_control.dart';
 import '../models/users.dart';
 import '../utils/local_storage.dart';
 
@@ -54,6 +60,7 @@ Future<LocationData> getLocation() async {
 }
 
 class _AddGardenState extends State<AddGarden> {
+
   String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
@@ -61,16 +68,29 @@ class _AddGardenState extends State<AddGarden> {
   String selectValue = '';
   File? _image;
   Map<String, TextEditingController> controllers = {};
-  final List<Kuisioner> kuisioneResult = [];
-  // DateTime creationDate = DateTime.now();
-  // List<int>? _selectedFile;
+  final List<Kuisioner> kuisioneResult = [
+    // Kuisioner(question: Check(id: 1, title: ' foto kebun', type: 'image',)),
+    // Kuisioner(question: Check(id: 1, title: ' apakah kebunnya banyak monyet?', type: 'check',)),
+    // Kuisioner(question: Check(id: 1, title: 'kapan terakhir kali di kored?', type: 'text',))
 
+  ];
+  String? imageBase64;
+  Uint8List? imageBytes;
+  final ImagePicker picker = ImagePicker();
+  bool showCheck = true;
+bool showText = true;
+bool showImage = true;
+
+  // List<int>? _selectedFile;
 
   Future<void> uploadImage() async {
     if (_image != null) {
       try {
-        var request = http.MultipartRequest('POST', Uri.parse(addGardenControl()));
-        request.files.add(http.MultipartFile('image', http.ByteStream(_image!.openRead()), await _image!.length(), filename: 'image.jpg', contentType: MediaType('image', 'jpeg')));
+        var request =
+            http.MultipartRequest('POST', Uri.parse(addGardenControl()));
+        request.files.add(http.MultipartFile('image',
+            http.ByteStream(_image!.openRead()), await _image!.length(),
+            filename: 'image.jpg', contentType: MediaType('image', 'jpeg')));
         var response = await request.send();
 
         if (response.statusCode == 200) {
@@ -81,25 +101,29 @@ class _AddGardenState extends State<AddGarden> {
       } catch (e) {
         print('Error: $e');
       }
-    } 
+    }
   }
-
-  
- 
 
   Future<void> getCheck() async {
     // print('ipakimsa');
     try {
       final response = await http_service.get(checkGardenControl());
       if (response.isSuccess) {
-        print(response.data);
+        // Set<String> uniqueTypes = Set();
+        // int itemCount = 0;
+
         for (var item in response.data) {
-          print(item);
-          kuisioneResult.add(Kuisioner(
-              question: Check(
-                  id: item['id'], title: item['title'], type: item['type']),
-              value: null));
+            kuisioneResult.add(Kuisioner(question: Check(id: item['id'], title: item['title'], type: item['type']),value: null));
+
         }
+        // print(response.data);
+        // for (var item in response.data) {
+        //   print(item);
+        //   kuisioneResult.add(Kuisioner(
+        //       question: Check(
+        //           id: item['id'], title: item['title'], type: item['type']),
+        //       value: null));
+        // }
         setState(() {});
       }
     } on SocketException {
@@ -162,12 +186,16 @@ class _AddGardenState extends State<AddGarden> {
   //   }
   // }
 
+  //gallery
   Future _pickFromGallery(Kuisioner kuisioner) async {
-    final returnImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final returnImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
     if (returnImage == null) return;
+    Uint8List bytesImage = await returnImage.readAsBytes();
     setState(() {
-      kuisioner.value = File(returnImage.path);
-      
+      imageBase64 = base64.encode(bytesImage);
+      kuisioner.value = imageBase64;
       // _image = File(returnImage.path);
       // selectedImage = File(returnImage.path).readAsBytesSync();
     });
@@ -176,57 +204,104 @@ class _AddGardenState extends State<AddGarden> {
 
   //camera
   Future _pickFromCamera(Kuisioner kuisioner) async {
-    final returnImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    final returnImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
     if (returnImage == null) return;
+    Uint8List bytesImage = await returnImage.readAsBytes();
     setState(() {
-      kuisioner.value = File(returnImage.path);
+      imageBase64 = base64.encode(bytesImage);
+      kuisioner.value = imageBase64;
+     
       // _image = File(returnImage.path);
       // selectedImage = File(returnImage.path).readAsBytesSync();
     });
     Navigator.pop(context);
   }
 
-  Future _cropImage({required File imageFile}) async {
-    CroppedFile? croppedImage = await ImageCropper().cropImage(
-      sourcePath: imageFile.path,
-      uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: 'cropper',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        IOSUiSettings(
-          title: 'cropper',
-        ),
-        WebUiSettings(
-            context: context,
-            presentStyle: CropperPresentStyle.dialog,
-            boundary: CroppieBoundary(width: 100, height: 100),
-            viewPort: CroppieViewPort(width: 100, height: 100, type: 'circle'),
-            enableExif: true,
-            enableZoom: true,
-            showZoomer: true)
-      ],
-    );
-    if (croppedImage == null) return null;
-    return File(croppedImage.path);
-  }
+  // Future _cropImage({required File imageFile}) async {
+  //   CroppedFile? croppedImage = await ImageCropper().cropImage(
+  //     sourcePath: imageFile.path,
+  //     uiSettings: [
+  //       AndroidUiSettings(
+  //           toolbarTitle: 'cropper',
+  //           toolbarColor: Colors.black,
+  //           toolbarWidgetColor: Colors.white,
+  //           initAspectRatio: CropAspectRatioPreset.original,
+  //           lockAspectRatio: false),
+  //       IOSUiSettings(
+  //         title: 'cropper',
+  //       ),
+  //       WebUiSettings(
+  //           context: context,
+  //           presentStyle: CropperPresentStyle.dialog,
+  //           boundary: CroppieBoundary(width: 100, height: 100),
+  //           viewPort: CroppieViewPort(width: 100, height: 100, type: 'circle'),
+  //           enableExif: true,
+  //           enableZoom: true,
+  //           showZoomer: true)
+  //     ],
+  //   );
+  //   if (croppedImage == null) return null;
+  //   return File(croppedImage.path);
+  // }
+
+  // takeImageAndCrop({required ImageSource imageSource}) async {
+  //   XFile? image = await picker.pickImage(source: imageSource);
+  //   if (image != null) {
+  //     CroppedFile? croppedFile = await ImageCropper().cropImage(
+  //         sourcePath: image.path,
+  //         compressQuality: 50,
+  //         maxHeight: 1000,
+  //         maxWidth: 1000,
+  //         aspectRatioPresets: [
+  //           CropAspectRatioPreset.square
+  //         ],
+  //         uiSettings: [
+  //           AndroidUiSettings(
+  //               toolbarTitle: 'Crop Image',
+  //               statusBarColor: Colors.black,
+  //               activeControlsWidgetColor: Color(0xFF78937A))
+  //         ]);
+  //     if (croppedFile != null) {
+  //       File cropImage = File(croppedFile.path);
+  //       Uint8List bytesImage = await cropImage.readAsBytes();
+  //       setState(() {
+  //         imageBase64 = base64.encode(bytesImage);
+  //         imageBytes = bytesImage;
+  //       });
+  //       await cropImage.delete();
+  //       if (context.mounted) {
+  //         showLoadingDialogNotdismissible(context);
+  //         var result = await AuthService.getImage(base64: imageBase64 ?? '');
+  //         if (mounted) Navigator.pop(context);
+  //         if (result.isSuccess && mounted) {
+  //         } else {
+  //           errorDialogHandler(
+  //               context: context,
+  //               info: result.userMessage,
+  //               status: result.status);
+  //         }
+  //       }
+  //     }
+  //     File pickImage = File(image.path);
+  //     await pickImage.delete();
+  //   }
+  // }
 
   void showImageOption(BuildContext context, Kuisioner kuisioner) {
     showModalBottomSheet(
-      context: context, 
-      builder: (builder) {
-        return Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 4.5,
-            child: Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: (){
+        context: context,
+        builder: (builder) {
+          return Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 4.5,
+              child: Row(
+                children: [
+                  Expanded(
+                      child: InkWell(
+                    onTap: () {
                       _pickFromGallery(kuisioner);
                     },
                     child: const SizedBox(
@@ -237,11 +312,10 @@ class _AddGardenState extends State<AddGarden> {
                         ],
                       ),
                     ),
-                  )
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: (){
+                  )),
+                  Expanded(
+                      child: InkWell(
+                    onTap: () {
                       _pickFromCamera(kuisioner);
                     },
                     child: const SizedBox(
@@ -253,11 +327,11 @@ class _AddGardenState extends State<AddGarden> {
                       ),
                     ),
                   ))
-              ],
+                ],
+              ),
             ),
-          ),
           );
-      });
+        });
   }
 
   // void _showSelectPhotoOptions(BuildContext context) {
@@ -292,7 +366,8 @@ class _AddGardenState extends State<AddGarden> {
         print(response.data);
         for (var item in response.data) {
           print(item);
-          listPenyadap.add(Users(id: item['id'], name: item['name'], username: item['username']));
+          listPenyadap.add(Users(
+              id: item['id'], name: item['name'], username: item['username']));
         }
         setState(() {});
       }
@@ -356,25 +431,23 @@ class _AddGardenState extends State<AddGarden> {
                         padding: const EdgeInsets.only(left: 15, top: 16),
                         child: Text(
                           'Penyadap',
-                          style: TextStyle(
-                            fontFamily: FontPoppins,
-                            fontSize: 16
-                          ),
+                          style:
+                              TextStyle(fontFamily: FontPoppins, fontSize: 16),
                         ),
-                        ),
+                      ),
                       DropdownButton(
-                        hint: Text('Pilih Penyadap'),
-                        isExpanded: true,
-                        value: selectedPenyadap,
-                        items: listPenyadap.map((e) {
-                          return DropdownMenuItem(
-                            value: e.id, child: Text(e.name.toString()));
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPenyadap = value as int;
-                          });
-                        }),
+                          hint: Text('Pilih Penyadap'),
+                          isExpanded: true,
+                          value: selectedPenyadap,
+                          items: listPenyadap.map((e) {
+                            return DropdownMenuItem(
+                                value: e.id, child: Text(e.name.toString()));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPenyadap = value as int;
+                            });
+                          }),
                       // for (var check in checks) ...[
                       //   Text(check.title, ),
                       //   check.type == 'text'
@@ -444,24 +517,25 @@ class _AddGardenState extends State<AddGarden> {
                               });
                             },
                           ),
-                        if (item.question.type == 'image') 
-                        
-                        Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Color(0xFFE9E9E9)
-                          ),
-                          child: item.value != null ? Image.memory(item.value.readAsBytesSync()!, fit: BoxFit.cover) 
-                          : IconButton(
-                          onPressed: (){
-                             showImageOption(context, item);
-                          }, icon: Icon(Icons.add_photo_alternate_rounded),
-                          color: Color(0xFF6D6B6B),
-                          iconSize: 30,)
-                        ) 
-                        // buildPhoto() 
+                        if (item.question.type == 'image')
+                          Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Color(0xFFE9E9E9)),
+                              child: item.value != null
+                                  ? Image.memory(base64Decode(item.value), fit: BoxFit.cover)
+                                  : IconButton(
+                                      onPressed: () {
+                                        showImageOption(context, item);
+                                      },
+                                      icon: Icon(
+                                          Icons.add_photo_alternate_rounded),
+                                      color: Color(0xFF6D6B6B),
+                                      iconSize: 30,
+                                    ))
+                        // buildPhoto()
                         // Tambahkan widget untuk memilih gambar
                         // Contoh: ImagePicker
                       ]
@@ -471,7 +545,6 @@ class _AddGardenState extends State<AddGarden> {
             SizedBox(
               height: 10,
             ),
-            
             Container(
               margin: EdgeInsets.only(right: 20, bottom: 5),
               height: 44,
@@ -509,26 +582,38 @@ class _AddGardenState extends State<AddGarden> {
         print(value);
       });
 
+      // DateTime creationDate = DateTime.now();
+      // String formatDate = creationDate.toLocal().toIso8601String();
+      // String itemType = 'type';
       var currentLocation = await getLocation();
       // final item = {'items': ['id', 'gardenControlId', 'title', 'value', 'note']};
-      final data = {'penyadaId': selectedPenyadap.toString(),
-        'icsId': 0,
+      final data = {
+        'penyadapId': selectedPenyadap,
         'lat': currentLocation.latitude,
         'lng': currentLocation.longitude,
-        'items': [{'id', 'gardenControlId', 'title', 'value', 'note'}]
+        'items': 
+        kuisioneResult
+            .map((item) => ({
+                  'title': item.question.title,
+                  'value': item.value.toString(),
+                  'status': 'OK',
+                  'type': item.question.type,
+                  'note': 'Normal',
+                }))
+            .toList(),
       };
       print(data);
 
-      final response = await http_service.post(addGardenControl(),
-      body: jsonEncode(data)
-      );
+      final response = await http_service.post(addGardenControl(), body: data);
       if (response.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sukses')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Sukses')));
         Navigator.pop(context);
         print('Sukses');
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Gagal')));
       print('Gagal');
     }
   }
@@ -616,8 +701,6 @@ class _AddGardenState extends State<AddGarden> {
 
 // var answerController = TextEditingController();
 // var jawabController = TextEditingController();
-
-
 
 // TextFormField buildQuest2() {
 //   return TextFormField(

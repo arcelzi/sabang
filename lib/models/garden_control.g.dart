@@ -8,8 +8,8 @@ part of 'garden_control.dart';
 
 GardenControl _$GardenControlFromJson(Map<String, dynamic> json) =>
     GardenControl(
-      penyadapId: json['penyadapId'] as String?,
-      icsId: json['icsId'] as String?,
+      penyadapId: json['penyadapId'] as num?,
+      icsId: json['icsId'] as num?,
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
@@ -29,14 +29,14 @@ Map<String, dynamic> _$GardenControlToJson(GardenControl instance) =>
       'lat': instance.lat,
       'lng': instance.lng,
       'id': instance.id,
-      'items': instance.items,
+      'items': instance.items.map((e) => e.toJson()).toList(),
     };
 
 GardenControlItems _$GardenControlItemsFromJson(Map<String, dynamic> json) =>
     GardenControlItems(
       id: json['id'] as int,
       title: json['title'] as String,
-      value: json['value'] as String,
+      value: json['value'] as String?,
       type: json['type'] as String,
     );
 

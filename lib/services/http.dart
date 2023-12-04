@@ -135,7 +135,7 @@ Future<HTTPResponse> get(url, {Duration timeoutDuration = const Duration(seconds
   }
 }
 
-Future<HTTPResponse> post(url, {Object? body, Duration timeoutDuration = const Duration(seconds: 20)}) async {
+Future<HTTPResponse> post(url, {Object? body, Duration timeoutDuration = const Duration(seconds: 100)}) async {
   try {
     // var connectivity = ConnectivityResult.none;
     // var monde = ConnectivityWrapper((e) => connectivity = e);
@@ -336,7 +336,7 @@ HTTPResponse responseCheck(Response response) {
           statusCode: response.statusCode,
           errorCode: result['errorCode'],
           data: result['data'],
-          userMessage: result['userMessage'] ?? result['message'] ??  'Terjadi kesalahan pada server'
+          userMessage: result['userMessage'] ?? 'Terjadi kesalahan pada server'
       );
     }
 }

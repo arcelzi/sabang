@@ -32,6 +32,7 @@ class _EditProfileState extends State<EditProfile> {
   var phoneController = TextEditingController();
   final ImagePicker picker = ImagePicker();
 
+
   String? imageBase64;
   Uint8List? imageBytes;
 
@@ -125,6 +126,8 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+      double screenWidth = MediaQuery.of(context).size.width;
+double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FB),
       appBar: AppBar(
@@ -168,106 +171,110 @@ class _EditProfileState extends State<EditProfile> {
                       backgroundColor: Colors.white,
                     ),
                   ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                            // alignment: Alignment.center,
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Color(0xFFE0ADA2)),
-                            child: IconButton(
-                              icon: Icon(Icons.camera_alt),
-                              iconSize: 25,
-                              onPressed: () async {
-                                var imageSource = await showModalBottomSheet(
-                                    barrierColor: Colors.black12,
-                                    backgroundColor: Colors.transparent,
-                                    isScrollControlled: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return BackdropFilter(
-                                        filter:
-                                            ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                                        child: Container(
-                                          padding: const EdgeInsets.only(bottom: 16),
-                                          decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(12),
-                                                  topRight: Radius.circular(12))),
-                                          child: SafeArea(
-                                              top: false,
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Container(
-                                                    margin: const EdgeInsets.only(
-                                                        top: 10),
-                                                    height: 6,
-                                                    width: 46,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(20),
-                                                        color: Colors.white),
-                                                  ),
-                                                  Container(
-                                                    margin: const EdgeInsets.only(
-                                                        top: 24),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        photoMenu(
-                                                          text: 'Kamera',
-                                                          icon: Icon(
-                                                            Icons.camera_alt,
-                                                            color: Colors.black,
-                                                          ),
-                                                          onTap: () {
-                                                            Navigator.pop(context,
-                                                                ImageSource.camera);
-                                                          },
-                                                        ),
-                                                        photoMenu(
-                                                            text: 'Gallery',
+                    Positioned(
+                      height: screenHeight * 0.3,
+                      right: screenWidth * 0.2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        // mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                              // alignment: Alignment.center,
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Color(0xFFE0ADA2)),
+                              child: IconButton(
+                                icon: Icon(Icons.camera_alt),
+                                iconSize: 25,
+                                onPressed: () async {
+                                  var imageSource = await showModalBottomSheet(
+                                      barrierColor: Colors.black12,
+                                      backgroundColor: Colors.transparent,
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (context) {
+                                        return BackdropFilter(
+                                          filter:
+                                              ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                                          child: Container(
+                                            padding: const EdgeInsets.only(bottom: 16),
+                                            decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(12),
+                                                    topRight: Radius.circular(12))),
+                                            child: SafeArea(
+                                                top: false,
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      margin: const EdgeInsets.only(
+                                                          top: 10),
+                                                      height: 6,
+                                                      width: 46,
+                                                      alignment: Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(20),
+                                                          color: Colors.white),
+                                                    ),
+                                                    Container(
+                                                      margin: const EdgeInsets.only(
+                                                          top: 24),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          photoMenu(
+                                                            text: 'Kamera',
                                                             icon: Icon(
-                                                              Icons.image,
+                                                              Icons.camera_alt,
                                                               color: Colors.black,
                                                             ),
                                                             onTap: () {
-                                                              Navigator.pop(
-                                                                  context,
-                                                                  ImageSource
-                                                                      .gallery);
-                                                            })
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              )),
-                                        ),
-                                      );
-                                    });
-                                if (imageSource != null)
-                                  takeImageAndCrop(imageSource: imageSource);
-                              },
-                              color: Colors.black,
+                                                              Navigator.pop(context,
+                                                                  ImageSource.camera);
+                                                            },
+                                                          ),
+                                                          photoMenu(
+                                                              text: 'Gallery',
+                                                              icon: Icon(
+                                                                Icons.image,
+                                                                color: Colors.black,
+                                                              ),
+                                                              onTap: () {
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    ImageSource
+                                                                        .gallery);
+                                                              })
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                )),
+                                          ),
+                                        );
+                                      });
+                                  if (imageSource != null)
+                                    takeImageAndCrop(imageSource: imageSource);
+                                },
+                                color: Colors.black,
+                              ),
                             ),
+                            ],
                           ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                 ],
               ),
