@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'package:sabang/menu/addgardencontrol.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
@@ -20,6 +21,7 @@ class GardenControlPage extends StatefulWidget {
 class _GardenControlPageState extends State<GardenControlPage> {
   String token = LocalStorage.getToken();
   final List<GardenControl> gardenControl = [];
+  String imageUrl = '';
 
   Future<List<GardenControl?>> getGarden() async {
     final response = await http_service.get(getGardenControl());
@@ -29,7 +31,9 @@ class _GardenControlPageState extends State<GardenControlPage> {
       var result = response.data;
       if (result is List) {
         for (var item in result) {
+          // imageUrl = item['imageUrl'];
           gardenControl.add(GardenControl.fromJson(item));
+          
         }
       }
     } else {
@@ -129,8 +133,8 @@ class _GardenControlPageState extends State<GardenControlPage> {
 
                               ListTile(
                                 title: Text(
-                                  'Tanggal : ' +
-                                      gardenControl[index].timestamp.toString(),
+                                  'Tanggal : ' + 
+                                      DateFormat('d MMM yyyy').format(gardenControl[index].timestamp),
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 14),
                                 ),
@@ -140,7 +144,7 @@ class _GardenControlPageState extends State<GardenControlPage> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                DetailGarden(garden: detailItem)
+                                                DetailGarden(garden: detailItem,imageUrl: imageUrl,)
                                           ),
                                           );
                                          
@@ -163,15 +167,15 @@ class _GardenControlPageState extends State<GardenControlPage> {
   }
 }
 
-class gardencontrol {
-  final String question1;
-  final String question2;
-  final String question3;
-  final String foto;
+// class gardencontrol {
+//   final String question1;
+//   final String question2;
+//   final String question3;
+//   final String foto;
 
-  gardencontrol(
-      {required this.question1,
-      required this.question2,
-      required this.question3,
-      required this.foto});
-}
+//   gardencontrol(
+//       {required this.question1,
+//       required this.question2,
+//       required this.question3,
+//       required this.foto});
+// }

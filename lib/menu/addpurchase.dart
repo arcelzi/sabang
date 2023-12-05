@@ -62,7 +62,7 @@ class _AddPurchaseState extends State<AddPurchase> {
   final _formKey = GlobalKey<FormState>();
   @override
   void setState(VoidCallback fn) {
-    if(mounted) super.setState(fn);
+    if (mounted) super.setState(fn);
   }
 
   @override
@@ -74,8 +74,7 @@ class _AddPurchaseState extends State<AddPurchase> {
   List<Users> listpenyadap = [];
   getPenyadap() async {
     try {
-      final response =
-          await http_service.get(getTappers());
+      final response = await http_service.get(getTappers());
       if (response.isSuccess) {
         print(response.data);
         for (var item in response.data) {
@@ -166,7 +165,8 @@ class _AddPurchaseState extends State<AddPurchase> {
                               value: selectedPenyadap,
                               items: listpenyadap.map((e) {
                                 return DropdownMenuItem<int>(
-                                    value: e.id, child: Text(e.name.toString()));
+                                    value: e.id,
+                                    child: Text(e.name.toString()));
                               }).toList(),
                               onChanged: (value) {
                                 setState(() {
@@ -178,11 +178,11 @@ class _AddPurchaseState extends State<AddPurchase> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15, top: 16),
-                            child:Text(
-                            "PH",
-                            style:
-                                TextStyle(fontFamily: FontPoppins, fontSize: 16),
-                          ), 
+                            child: Text(
+                              "PH",
+                              style: TextStyle(
+                                  fontFamily: FontPoppins, fontSize: 16),
+                            ),
                           ),
                           SizedBox(
                             height: 6,
@@ -222,13 +222,12 @@ class _AddPurchaseState extends State<AddPurchase> {
               child: ElevatedButton(
                   onPressed: () {
                     submitNira();
-
                   },
                   // () async {
                   //   num ph = num.parse(_phController.text);
                   //   num sugarLevel = num.parse(_brixController.text);
                   //   num volume = num.parse(_volumeController.text);
-      
+
                   //   //  getLocation().then((value){
                   //   //     print(value);
                   //   //   });
@@ -280,11 +279,13 @@ class _AddPurchaseState extends State<AddPurchase> {
 
       if (response.isSuccess) {
         print('Creation Succes');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Creation Succes")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Creation Succes")));
         Navigator.pop(context);
       } else {
         print('Creation Failed');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Creation Failed")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Creation Failed")));
         print(response.data);
       }
     }

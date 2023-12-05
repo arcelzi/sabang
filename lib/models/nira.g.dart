@@ -16,9 +16,7 @@ Nira _$NiraFromJson(Map<String, dynamic> json) => Nira(
       lat: json['lat'] as num?,
       lng: json['lng'] as num?,
       amount: json['amount'] as num?,
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String),
       paidAt: json['paidAt'] == null
           ? null
           : DateTime.parse(json['paidAt'] as String),
@@ -40,7 +38,7 @@ Map<String, dynamic> _$NiraToJson(Nira instance) => <String, dynamic>{
       'lat': instance.lat,
       'lng': instance.lng,
       'amount': instance.amount,
-      'timestamp': instance.timestamp?.toIso8601String(),
+      'timestamp': instance.timestamp.toIso8601String(),
       'paidAt': instance.paidAt?.toIso8601String(),
       'checkedAt': instance.checkedAt?.toIso8601String(),
       'auditedAt': instance.auditedAt?.toIso8601String(),

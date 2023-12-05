@@ -27,7 +27,7 @@ class Nira {
     @JsonKey(name: "amount")
     num? amount;
     @JsonKey(name: "timestamp")
-    DateTime? timestamp;
+    DateTime timestamp;
     @JsonKey(name: "paidAt")
     DateTime? paidAt;
     @JsonKey(name: "checkedAt")
@@ -45,7 +45,7 @@ class Nira {
         this.lat,
         this.lng,
         this.amount,
-        this.timestamp,
+        required this.timestamp,
         this.paidAt,
         this.checkedAt,
         this.auditedAt,

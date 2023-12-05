@@ -8,22 +8,22 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
+// import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
-import 'package:sabang/services/auth_service.dart';
+// import 'package:sabang/services/auth_service.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
 // import 'package:sabang/view/selectphoto.dart';
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:sabang/widgets/erro_handler.dart';
-import 'package:sabang/widgets/loading.dart';
-import 'package:sabang/widgets/pick_image.dart';
+// import 'package:sabang/widgets/erro_handler.dart';
+// import 'package:sabang/widgets/loading.dart';
+// import 'package:sabang/widgets/pick_image.dart';
 // import 'dart:html' as html;
 
 import '../models/checklits.dart';
-import '../models/garden_control.dart';
+// import '../models/garden_control.dart';
 import '../models/users.dart';
 import '../utils/local_storage.dart';
 
@@ -72,14 +72,13 @@ class _AddGardenState extends State<AddGarden> {
     // Kuisioner(question: Check(id: 1, title: ' foto kebun', type: 'image',)),
     // Kuisioner(question: Check(id: 1, title: ' apakah kebunnya banyak monyet?', type: 'check',)),
     // Kuisioner(question: Check(id: 1, title: 'kapan terakhir kali di kored?', type: 'text',))
-
   ];
   String? imageBase64;
   Uint8List? imageBytes;
   final ImagePicker picker = ImagePicker();
-  bool showCheck = true;
-bool showText = true;
-bool showImage = true;
+//   bool showCheck = true;
+// bool showText = true;
+// bool showImage = true;
 
   // List<int>? _selectedFile;
 
@@ -399,179 +398,177 @@ bool showImage = true;
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-                // margin: EdgeInsets.symmetric(horizontal: 80, vertical: 25),
-                padding:
-                    EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-                // height: 617,
-                // width: 350,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFFD8D4D4),
-                      offset: const Offset(0, 0),
-                      blurRadius: 6,
-                      spreadRadius: 2,
-                    )
-                  ],
-                  borderRadius: BorderRadius.circular(14),
-                  color: Color(0xFFFFFFFF),
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15, top: 16),
-                        child: Text(
-                          'Penyadap',
-                          style:
-                              TextStyle(fontFamily: FontPoppins, fontSize: 16),
-                        ),
-                      ),
-                      DropdownButton(
-                          hint: Text('Pilih Penyadap'),
-                          isExpanded: true,
-                          value: selectedPenyadap,
-                          items: listPenyadap.map((e) {
-                            return DropdownMenuItem(
-                                value: e.id, child: Text(e.name.toString()));
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedPenyadap = value as int;
-                            });
-                          }),
-                      // for (var check in checks) ...[
-                      //   Text(check.title, ),
-                      //   check.type == 'text'
-                      //       ? buildQuest(check.id)
-                      //       : check.type == 'image'
-                      //           ? buildPhoto()
-                      //           : buildCheck(check.id),
-                      // ]
-                      for (var item in kuisioneResult) ...[
-                        Text(item.question.title),
-                        if (item.question.type == 'check')
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    backgroundColor: item.value == true
-                                        ? Color(0xFF78937A)
-                                        : Colors.grey.shade400),
-                                onPressed: () {
-                                  setState(() {
-                                    item.value = true;
-                                  });
-                                },
-                                child: Text('Ya'),
-                              ),
-                              SizedBox(width: 8),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    backgroundColor: item.value == false
-                                        ? Color(0xFF78937A)
-                                        : Colors.grey.shade400),
-                                onPressed: () {
-                                  setState(() {
-                                    item.value = false;
-                                  });
-                                },
-                                child: Text('Tidak'),
-                              ),
-                            ],
-                          ),
-                        if (item.question.type == 'text')
-                          TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color(0xFFE9E9E9),
-                              hintText: 'Answer here',
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: BorderSide(
-                                    color: Color(0xFFE9E9E9), width: 0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(
-                                      color: Color(0xFFE9E9E9), width: 0)),
-                            ),
-                            style: TextStyle(fontSize: 14, color: Colors.black),
-                            onChanged: (text) {
-                              setState(() {
-                                item.value = text;
-                              });
-                            },
-                          ),
-                        if (item.question.type == 'image')
-                          Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Color(0xFFE9E9E9)),
-                              child: item.value != null
-                                  ? Image.memory(base64Decode(item.value), fit: BoxFit.cover)
-                                  : IconButton(
-                                      onPressed: () {
-                                        showImageOption(context, item);
-                                      },
-                                      icon: Icon(
-                                          Icons.add_photo_alternate_rounded),
-                                      color: Color(0xFF6D6B6B),
-                                      iconSize: 30,
-                                    ))
-                        // buildPhoto()
-                        // Tambahkan widget untuk memilih gambar
-                        // Contoh: ImagePicker
-                      ]
-                    ],
-                  ),
-                )),
-            SizedBox(
-              height: 10,
+      body: Form(
+        key: _formKey,
+        child: Container(
+            // margin: EdgeInsets.symmetric(horizontal: 80, vertical: 25),
+            padding:
+                EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+            // height: 617,
+            // width: 350,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFFD8D4D4),
+                  offset: const Offset(0, 0),
+                  blurRadius: 6,
+                  spreadRadius: 2,
+                )
+              ],
+              borderRadius: BorderRadius.circular(14),
+              color: Color(0xFFFFFFFF),
             ),
-            Container(
-              margin: EdgeInsets.only(right: 20, bottom: 5),
-              height: 44,
-              width: 88,
-              child: ElevatedButton(
-                  onPressed: () {
-                    print(kuisioneResult.map(
-                        (e) => {'title': e.question.title, 'value': e.value}));
-                    submitGarden();
-                    uploadImage();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFE0ADA2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, top: 16),
+                    child: Text(
+                      'Penyadap',
+                      style:
+                          TextStyle(fontFamily: FontPoppins, fontSize: 16),
                     ),
                   ),
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                        fontFamily: FontPoppins,
-                        fontSize: 14,
-                        color: Color(0xFFFFFFFF)),
-                  )),
-            )
-          ],
-        ),
+                  DropdownButton(
+                      hint: Text('Pilih Penyadap'),
+                      isExpanded: true,
+                      value: selectedPenyadap,
+                      items: listPenyadap.map((e) {
+                        return DropdownMenuItem(
+                            value: e.id, child: Text(e.name.toString()));
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedPenyadap = value as int;
+                        });
+                      }),
+                  // for (var check in checks) ...[
+                  //   Text(check.title, ),
+                  //   check.type == 'text'
+                  //       ? buildQuest(check.id)
+                  //       : check.type == 'image'
+                  //           ? buildPhoto()
+                  //           : buildCheck(check.id),
+                  // ]
+                  for (var item in kuisioneResult) ...[
+                    Text(item.question.title),
+                    if (item.question.type == 'check')
+                      Row(
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(15)),
+                                backgroundColor: item.value == true
+                                    ? Color(0xFF78937A)
+                                    : Colors.grey.shade400),
+                            onPressed: () {
+                              setState(() {
+                                item.value = true;
+                              });
+                            },
+                            child: Text('Ya'),
+                          ),
+                          SizedBox(width: 8),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(15)),
+                                backgroundColor: item.value == false
+                                    ? Color(0xFF78937A)
+                                    : Colors.grey.shade400),
+                            onPressed: () {
+                              setState(() {
+                                item.value = false;
+                              });
+                            },
+                            child: Text('Tidak'),
+                          ),
+                        ],
+                      ),
+                    if (item.question.type == 'text')
+                      TextFormField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color(0xFFE9E9E9),
+                          hintText: 'Answer here',
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9), width: 0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                  color: Color(0xFFE9E9E9), width: 0)),
+                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        onSaved: (text) {
+                          setState(() {
+                            item.value = text;
+                          });
+                        },
+                      ),
+                    if (item.question.type == 'image')
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Color(0xFFE9E9E9)),
+                          child: item.value != null
+                              ? Image.memory(base64Decode(item.value), fit: BoxFit.cover,)
+                              : IconButton(
+                                  onPressed: () {
+                                    showImageOption(context, item);
+                                  },
+                                  icon: Icon(
+                                      Icons.add_photo_alternate_rounded),
+                                  color: Color(0xFF6D6B6B),
+                                  iconSize: 30,
+                                )),
+                    // buildPhoto()
+                    // Tambahkan widget untuk memilih gambar
+                    // Contoh: ImagePicker
+                  ],
+                
+                SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(right: 20, bottom: 5),
+                      height: 44,
+                      width: 88,
+                      child: ElevatedButton(
+              onPressed: () {
+                _formKey.currentState!.save();
+                print(kuisioneResult.map(
+                    (e) => {'title': e.question.title, 'value': e.value}));
+                submitGarden();
+                uploadImage();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFE0ADA2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: Text(
+                "Save",
+                style: TextStyle(
+                    fontFamily: FontPoppins,
+                    fontSize: 14,
+                    color: Color(0xFFFFFFFF)),
+              )),
+                    )
+                ],
+              ),
+            )),
       ),
     );
   }

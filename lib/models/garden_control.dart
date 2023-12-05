@@ -13,7 +13,7 @@ class GardenControl {
     @JsonKey(name: "icsId")
     num? icsId;
     @JsonKey(name: "timestamp")
-    DateTime? timestamp;
+    DateTime timestamp;
     @JsonKey(name: "lat")
     num? lat;
     @JsonKey(name: "lng")
@@ -26,7 +26,7 @@ class GardenControl {
     GardenControl({
         this.penyadapId,
         this.icsId,
-        this.timestamp,
+        required this.timestamp,
         this.lat,
         this.lng,
         this.id,

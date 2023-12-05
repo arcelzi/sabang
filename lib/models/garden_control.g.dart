@@ -10,9 +10,7 @@ GardenControl _$GardenControlFromJson(Map<String, dynamic> json) =>
     GardenControl(
       penyadapId: json['penyadapId'] as num?,
       icsId: json['icsId'] as num?,
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String),
       lat: json['lat'] as num?,
       lng: json['lng'] as num?,
       id: json['id'] as int?,
@@ -25,7 +23,7 @@ Map<String, dynamic> _$GardenControlToJson(GardenControl instance) =>
     <String, dynamic>{
       'penyadapId': instance.penyadapId,
       'icsId': instance.icsId,
-      'timestamp': instance.timestamp?.toIso8601String(),
+      'timestamp': instance.timestamp.toIso8601String(),
       'lat': instance.lat,
       'lng': instance.lng,
       'id': instance.id,

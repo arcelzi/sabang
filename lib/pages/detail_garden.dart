@@ -16,8 +16,9 @@ import 'package:sabang/models/garden_control.dart';
 
 class DetailGarden extends StatefulWidget {
   final GardenControl garden;
+  final String imageUrl;
 
-  DetailGarden({required this.garden});
+  DetailGarden({required this.garden, required this.imageUrl});
 
   @override
   State<DetailGarden> createState() => _DetailGardenState();
@@ -25,6 +26,7 @@ class DetailGarden extends StatefulWidget {
 
 class _DetailGardenState extends State<DetailGarden> {
   late GardenControl _garden;
+  late String imageUrl;
   final List<GardenControl> gardenControl = [];
   final List<GardenControlItems> itemGarden = [];
 
@@ -51,6 +53,7 @@ class _DetailGardenState extends State<DetailGarden> {
   void initState() {
     super.initState();
     _garden = widget.garden;
+    imageUrl = widget.imageUrl;
     // getDetail();
   }
 
@@ -82,18 +85,21 @@ class _DetailGardenState extends State<DetailGarden> {
                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (_garden.items.isNotEmpty) Text('Item Details : '),
-              for (GardenControlItems detail in _garden.items)
-                ListTile(
-                  title: Text('${detail.title} : ${detail.value}'),
-                  subtitle: Text('${detail.type}'),
-                )
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_garden.items.isNotEmpty) Text('Item Details : '),
+                for (GardenControlItems detail in _garden.items)
+                  ListTile(
+                    title: Text('${detail.title}'),
+                    subtitle: Text('${detail.type}'),
+                    trailing: Image.network('${detail.value}'),
+                  )
+              ],
+            ),
           ),
         ));
   }

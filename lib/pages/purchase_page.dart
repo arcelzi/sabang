@@ -10,6 +10,7 @@ import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/models/nira.dart';
 import 'package:sabang/utils/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage({super.key});
@@ -24,6 +25,17 @@ class _PurchasePageState extends State<PurchasePage> {
   final String FontPoppins = 'FontPoppins';
   final List<Nira> nira = [];
 
+  // void main(DateTime timestamp) async {
+  //   await initializeDateFormatting('id_ID', null);
+  //   // formatDate(timestamp);
+  //   print(DateFormat.yMMMMd('id_ID').format(DateTime.now()));     
+  // }
+
+  // String formatDate(DateTime timestamp) {
+  //   final DateFormat formatter = DateFormat('dd-MM-yyyy', 'Asia/Jakarta');
+  //   return formatter.format(timestamp);
+  // }
+  
   Future<List<Nira?>> getNira() async {
     final response = await http_service.get(getPurchase());
 
@@ -147,7 +159,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
-                                "BRIX : " + nira[index].sugarLevel.toString(),
+                                "Kadar Gula : " + nira[index].sugarLevel.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
@@ -155,11 +167,11 @@ class _PurchasePageState extends State<PurchasePage> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
-                                "Amount: " + nira[index].amount.toString(),
+                                "Harga: " + nira[index].amount.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
-                              Text(
-                                'Tanggal : ' + nira[index].timestamp.toString(),
+                              Text("Tanggal : " +
+                               DateFormat('d MMM yyyy').format(nira[index].timestamp),
                                 style: TextStyle(color: Colors.white),
                               )
                             ]),
@@ -184,4 +196,5 @@ class _PurchasePageState extends State<PurchasePage> {
       ),
     );
   }
+  
 }
