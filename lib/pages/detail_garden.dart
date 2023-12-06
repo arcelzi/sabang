@@ -94,10 +94,14 @@ class _DetailGardenState extends State<DetailGarden> {
                 if (_garden.items.isNotEmpty) Text('Item Details : '),
                 for (GardenControlItems detail in _garden.items)
                   ListTile(
-                    title: Text('${detail.title}'),
-                    subtitle: Text('${detail.type}'),
-                    trailing: Image.network('${detail.value}'),
-                  )
+                      title: Text('${detail.title}',style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),),
+                      subtitle: detail.type == 'check'
+                          ? Text(detail.value == 'true' ? 'Ya' : 'Tidak',
+                              style: TextStyle(fontSize: 16, color: Colors.grey.shade800))
+                          : detail.type == 'text'
+                              ? Text('${detail.value}',
+                                  style: TextStyle(fontSize: 16, color: Colors.grey.shade800))
+                              : Image.network('${detail.value}'))
               ],
             ),
           ),
