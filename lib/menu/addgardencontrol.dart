@@ -17,6 +17,7 @@ import 'package:sabang/services/common/api_endpoints.dart';
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:sabang/widgets/loading.dart';
 // import 'package:sabang/widgets/erro_handler.dart';
 // import 'package:sabang/widgets/loading.dart';
 // import 'package:sabang/widgets/pick_image.dart';
@@ -192,9 +193,12 @@ class _AddGardenState extends State<AddGarden> {
 
     if (returnImage == null) return;
     Uint8List bytesImage = await returnImage.readAsBytes();
+    LocationData currentLocation = await getLocation();
     setState(() {
       imageBase64 = base64.encode(bytesImage);
       kuisioner.value = imageBase64;
+      currentLocation.latitude;
+      currentLocation.longitude;
       // _image = File(returnImage.path);
       // selectedImage = File(returnImage.path).readAsBytesSync();
     });
@@ -207,9 +211,12 @@ class _AddGardenState extends State<AddGarden> {
         await ImagePicker().pickImage(source: ImageSource.camera);
     if (returnImage == null) return;
     Uint8List bytesImage = await returnImage.readAsBytes();
+    LocationData currentLocation = await getLocation();
     setState(() {
       imageBase64 = base64.encode(bytesImage);
       kuisioner.value = imageBase64;
+      currentLocation.latitude;
+      currentLocation.longitude;
      
       // _image = File(returnImage.path);
       // selectedImage = File(returnImage.path).readAsBytesSync();
@@ -551,6 +558,8 @@ class _AddGardenState extends State<AddGarden> {
                     (e) => {'title': e.question.title, 'value': e.value}));
                 submitGarden();
                 uploadImage();
+                showLoadingDialogNotdismissible(context);
+                
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFE0ADA2),

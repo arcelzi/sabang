@@ -11,6 +11,8 @@ import 'package:sabang/models/users.dart';
 import 'package:location/location.dart';
 import 'package:sabang/utils/local_storage.dart';
 
+import '../widgets/loading.dart';
+
 class AddPurchase extends StatefulWidget {
   const AddPurchase({super.key});
 
@@ -222,6 +224,7 @@ class _AddPurchaseState extends State<AddPurchase> {
               child: ElevatedButton(
                   onPressed: () {
                     submitNira();
+                    showLoadingDialogNotdismissible(context);
                   },
                   // () async {
                   //   num ph = num.parse(_phController.text);
@@ -251,6 +254,7 @@ class _AddPurchaseState extends State<AddPurchase> {
   }
 
   void submitNira() async {
+    
     if (_formKey.currentState!.validate()) {
       getLocation().then((value) {
         print(value);
@@ -277,16 +281,21 @@ class _AddPurchaseState extends State<AddPurchase> {
         body: body,
       );
 
-      if (response.isSuccess) {
+      if (response.isSuccess && mounted) {
+        
         print('Creation Succes');
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Creation Succes")));
+            .showSnackBar(SnackBar(content: Text("Sukses"), elevation: 0,));
+        
         Navigator.pop(context);
+        
       } else {
         print('Creation Failed');
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Creation Failed")));
+            .showSnackBar(SnackBar(content: Text("Gagal")));
+        
         print(response.data);
+        
       }
     }
   }

@@ -37,7 +37,7 @@ class Dialogs {
     barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
-        title: const Text('Informasi'),
+        title: const Text('Berhasil'),
         content: SingleChildScrollView(
           child: ListBody(
             children: [

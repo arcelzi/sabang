@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:avicenna/avicenna.dart';
 
 showLoadingDialogNotdismissible(context){
-  showCupertinoDialog(context: context, 
-  builder: ((context) => CircularProgressIndicator(
-    color: Colors.grey,
-  )),
+  showAvicennaDialog(
+    context: context,
+    barrierDismissible: false,
+    transitionDuration: const Duration(milliseconds: 400), 
+    child: const AvicennaLoadingDialog()
   );
 }
