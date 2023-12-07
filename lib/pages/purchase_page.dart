@@ -2,8 +2,10 @@ import 'dart:async';
 
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:sabang/menu/addpurchase.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
 import 'package:sabang/services/http.dart' as http_service;
@@ -11,6 +13,8 @@ import 'package:sabang/models/nira.dart';
 import 'package:sabang/utils/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:hive/hive.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage({super.key});
@@ -36,16 +40,23 @@ class _PurchasePageState extends State<PurchasePage> {
   //   return formatter.format(timestamp);
   // }
   
+  
+
   Future<List<Nira?>> getNira() async {
+    final cachedData = Hive.box<List>('nira_cache').get('nira_cache_key');
+    if (cachedData != null) {
+      nira.addAll(cachedData.map((item) => Nira.fromJson(item)));
+    }
     final response = await http_service.get(getPurchase());
 
     print(response.statusCode);
     if (response.statusCode == 200) {
       var result = response.data;
       if (result is List) {
-        for (var item in result) {
-          nira.add(Nira.fromJson(item));
-        }
+        Hive.box<List>('nira_cache').put('nira_cache_key', result);
+        nira.clear();
+          nira.addAll(result.map((item) => Nira.fromJson(item)));
+        
       }
     } else {
       print(response.data);
@@ -61,9 +72,37 @@ class _PurchasePageState extends State<PurchasePage> {
 
   @override
   void initState() {
+    openHiveBoxes();
     getNira();
     getCred();
     super.initState();
+    checkInternetConnection();
+  }
+
+  void checkInternetConnection () async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetToast();
+    }
+  }
+  
+  void openHiveBoxes() async {
+    await Hive.initFlutter();
+    await Hive.openBox<List>('nira_cache');
+  }
+
+  void showNoInternetToast() {
+    Fluttertoast.showToast(
+      msg: 'Tidak ada koneksi internet',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 5,
+      backgroundColor: Colors.grey,
+      textColor: Colors.black,
+      fontSize: 16.0
+
+      
+    );
   }
 
   void getCred() async {
