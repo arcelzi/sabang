@@ -503,7 +503,7 @@ class _AddGardenState extends State<AddGarden> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color(0xFFE9E9E9),
-                          hintText: 'Answer here',
+                          hintText: 'Jawab disini',
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: BorderSide(
