@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,6 +19,7 @@ import 'package:sabang/services/http.dart' as http_service;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:sabang/widgets/loading.dart';
+import 'package:uuid/uuid.dart';
 // import 'package:sabang/widgets/erro_handler.dart';
 // import 'package:sabang/widgets/loading.dart';
 // import 'package:sabang/widgets/pick_image.dart';
@@ -25,15 +27,10 @@ import 'package:sabang/widgets/loading.dart';
 
 import '../models/checklits.dart';
 // import '../models/garden_control.dart';
+import '../models/kuisoner.dart';
 import '../models/users.dart';
 import '../utils/local_storage.dart';
-
-class Kuisioner {
-  Check question;
-  dynamic value;
-
-  Kuisioner({required this.question, this.value});
-}
+import 'package:hive/hive.dart';
 
 class AddGarden extends StatefulWidget {
   const AddGarden({super.key});
@@ -61,15 +58,18 @@ Future<LocationData> getLocation() async {
 }
 
 class _AddGardenState extends State<AddGarden> {
-
   String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
-  final List<Check> checks = [];
+  List<Check> checks = [];
   String selectValue = '';
   File? _image;
+  late Box offlineGardenBox;
+  late Box<Kuisioner> kuisonerBox;
+  late Box<Check> checkBox;
+  late Box<Users> usersBox;
   Map<String, TextEditingController> controllers = {};
-  final List<Kuisioner> kuisioneResult = [
+  List<Kuisioner> kuisioneResult = [
     // Kuisioner(question: Check(id: 1, title: ' foto kebun', type: 'image',)),
     // Kuisioner(question: Check(id: 1, title: ' apakah kebunnya banyak monyet?', type: 'check',)),
     // Kuisioner(question: Check(id: 1, title: 'kapan terakhir kali di kored?', type: 'text',))
@@ -83,6 +83,7 @@ class _AddGardenState extends State<AddGarden> {
 
   // List<int>? _selectedFile;
 
+  // Upload Image
   Future<void> uploadImage() async {
     if (_image != null) {
       try {
@@ -95,6 +96,8 @@ class _AddGardenState extends State<AddGarden> {
 
         if (response.statusCode == 200) {
           print('Gambar berhasil diunggah');
+          var box = await Hive.openBox('garden_control');
+          box.put('imagePath', _image!.path);
         } else {
           print('Gagal menggunggah gambar. Status: ${response.statusCode}');
         }
@@ -104,27 +107,72 @@ class _AddGardenState extends State<AddGarden> {
     }
   }
 
-  Future<void> getCheck() async {
-    // print('ipakimsa');
+  Future<void> sendLocalData() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      for (var gardenData in offlineGardenBox.values) {
+        await uploadDataToServer(gardenData);
+      }
+
+      offlineGardenBox.clear();
+    }
+  }
+
+  Future<void> uploadDataToServer(Map<String, dynamic> data) async {
     try {
-      final response = await http_service.get(checkGardenControl());
+      final response = await http_service.post(addGardenControl(), body: data);
+
       if (response.isSuccess) {
-        // Set<String> uniqueTypes = Set();
-        // int itemCount = 0;
+        print('Upload sukses');
+      } else {
+        print('Upload gagal');
+        offlineGardenBox.put(Uuid().v4(), data);
+      }
+    } catch (e) {
+      print('Error saat sedang upload');
+      offlineGardenBox.put(Uuid().v4(), data);
+    }
+  }
 
-        for (var item in response.data) {
-            kuisioneResult.add(Kuisioner(question: Check(id: item['id'], title: item['title'], type: item['type']),value: null));
-
-        }
-        // print(response.data);
-        // for (var item in response.data) {
-        //   print(item);
-        //   kuisioneResult.add(Kuisioner(
-        //       question: Check(
-        //           id: item['id'], title: item['title'], type: item['type']),
-        //       value: null));
-        // }
+  // Mengambil data Checklist
+  Future<void> getCheck() async {
+    print('ipakimsa');
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectionState.none) {
+        checks = checkBox.values.toList();
+        kuisioneResult = kuisonerBox.values.toList();
         setState(() {});
+      } else {
+        final response = await http_service.get(checkGardenControl());
+        if (response.isSuccess) {
+          checks = [];
+          kuisioneResult = [];
+          // Set<String> uniqueTypes = Set();
+          // int itemCount = 0;
+          print(response.data);
+          for (var item in response.data) {
+            print(item);
+            Check checks = Check.fromJson(item);
+            Kuisioner kuisoner = Kuisioner(
+                question: Check(
+                  id: item['id'],
+                  title: item['title'],
+                  type: item['type'],
+                ),
+                value: null);
+            kuisioneResult.add(kuisoner);
+            checkBox.put(item['id'], checks);
+            kuisonerBox.put(item['id'], kuisoner);
+          }
+          for (var item in kuisioneResult) {
+            print(item.question.title);
+          }
+          setState(() {
+            print('$kuisioneResult');
+          });
+        }
       }
     } on SocketException {
       throw Exception('No internet');
@@ -137,8 +185,7 @@ class _AddGardenState extends State<AddGarden> {
   @override
   void initState() {
     super.initState();
-    getCheck();
-    getPenyadap();
+    initial();
   }
 
   @override
@@ -217,7 +264,7 @@ class _AddGardenState extends State<AddGarden> {
       kuisioner.value = imageBase64;
       currentLocation.latitude;
       currentLocation.longitude;
-     
+
       // _image = File(returnImage.path);
       // selectedImage = File(returnImage.path).readAsBytesSync();
     });
@@ -364,18 +411,39 @@ class _AddGardenState extends State<AddGarden> {
   //           })));
   // }
 
+  initial() async {
+    offlineGardenBox = await Hive.openBox('gardenControl');
+    kuisonerBox = await Hive.openBox<Kuisioner>('kuisoner');
+    checkBox = await Hive.openBox<Check>('checkBox');
+    usersBox = await Hive.openBox('usersBox');
+    listPenyadap = usersBox.values.toList();
+    checks = checkBox.values.toList();
+    kuisioneResult = kuisonerBox.values.toList();
+    setState(() {});
+    getPenyadap();
+    getCheck();
+  }
+
   List<Users> listPenyadap = [];
   getPenyadap() async {
     try {
-      final response = await http_service.get(getTappers());
-      if (response.isSuccess) {
-        print(response.data);
-        for (var item in response.data) {
-          print(item);
-          listPenyadap.add(Users(
-              id: item['id'], name: item['name'], username: item['username']));
-        }
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectionState.none) {
+        listPenyadap = usersBox.values.toList();
         setState(() {});
+      } else {
+        final response = await http_service.get(getTappers());
+        if (response.isSuccess) {
+          listPenyadap = [];
+          print(response.data);
+          for (var item in response.data) {
+            print(item);
+            Users users = Users.fromJson(item);
+            listPenyadap.add(users);
+            usersBox.put(item['id'], users);
+          }
+          setState(() {});
+        }
       }
     } on SocketException {
       throw Exception('No internet');
@@ -409,8 +477,7 @@ class _AddGardenState extends State<AddGarden> {
         key: _formKey,
         child: Container(
             // margin: EdgeInsets.symmetric(horizontal: 80, vertical: 25),
-            padding:
-                EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
             // height: 617,
             // width: 350,
             decoration: BoxDecoration(
@@ -435,8 +502,7 @@ class _AddGardenState extends State<AddGarden> {
                     padding: const EdgeInsets.only(left: 15, top: 16),
                     child: Text(
                       'Penyadap',
-                      style:
-                          TextStyle(fontFamily: FontPoppins, fontSize: 16),
+                      style: TextStyle(fontFamily: FontPoppins, fontSize: 16),
                     ),
                   ),
                   DropdownButton(
@@ -468,8 +534,7 @@ class _AddGardenState extends State<AddGarden> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(15)),
+                                    borderRadius: BorderRadius.circular(15)),
                                 backgroundColor: item.value == true
                                     ? Color(0xFF78937A)
                                     : Colors.grey.shade400),
@@ -484,8 +549,7 @@ class _AddGardenState extends State<AddGarden> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(15)),
+                                    borderRadius: BorderRadius.circular(15)),
                                 backgroundColor: item.value == false
                                     ? Color(0xFF78937A)
                                     : Colors.grey.shade400),
@@ -506,8 +570,8 @@ class _AddGardenState extends State<AddGarden> {
                           hintText: 'Jawab disini',
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(
-                                color: Color(0xFFE9E9E9), width: 0),
+                            borderSide:
+                                BorderSide(color: Color(0xFFE9E9E9), width: 0),
                           ),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
@@ -529,13 +593,15 @@ class _AddGardenState extends State<AddGarden> {
                               borderRadius: BorderRadius.circular(15),
                               color: Color(0xFFE9E9E9)),
                           child: item.value != null
-                              ? Image.memory(base64Decode(item.value), fit: BoxFit.cover,)
+                              ? Image.memory(
+                                  base64Decode(item.value),
+                                  fit: BoxFit.cover,
+                                )
                               : IconButton(
                                   onPressed: () {
                                     showImageOption(context, item);
                                   },
-                                  icon: Icon(
-                                      Icons.add_photo_alternate_rounded),
+                                  icon: Icon(Icons.add_photo_alternate_rounded),
                                   color: Color(0xFF6D6B6B),
                                   iconSize: 30,
                                 )),
@@ -543,38 +609,36 @@ class _AddGardenState extends State<AddGarden> {
                     // Tambahkan widget untuk memilih gambar
                     // Contoh: ImagePicker
                   ],
-                
-                SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(right: 20, bottom: 5),
-                      height: 44,
-                      width: 88,
-                      child: ElevatedButton(
-              onPressed: () {
-                _formKey.currentState!.save();
-                print(kuisioneResult.map(
-                    (e) => {'title': e.question.title, 'value': e.value}));
-                submitGarden();
-                uploadImage();
-                showLoadingDialogNotdismissible(context);
-                
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFE0ADA2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Text(
-                "Save",
-                style: TextStyle(
-                    fontFamily: FontPoppins,
-                    fontSize: 14,
-                    color: Color(0xFFFFFFFF)),
-              )),
-                    )
+
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 20, bottom: 5),
+                    height: 44,
+                    width: 88,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          _formKey.currentState!.save();
+                          print(kuisioneResult.map((e) =>
+                              {'title': e.question.title, 'value': e.value}));
+                          submitGarden();
+                          uploadImage();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFE0ADA2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                              fontFamily: FontPoppins,
+                              fontSize: 14,
+                              color: Color(0xFFFFFFFF)),
+                        )),
+                  )
                 ],
               ),
             )),
@@ -582,45 +646,55 @@ class _AddGardenState extends State<AddGarden> {
     );
   }
 
-  Future<void> submitGarden() async {
+  void submitGarden() async {
     if (_formKey.currentState!.validate()) {
-      getLocation().then((value) {
-        print(value);
-      });
+      showLoadingDialogNotdismissible(context);
+      try {
+        getLocation().then((value) {
+          print(value);
+        });
 
-      // DateTime creationDate = DateTime.now();
-      // String formatDate = creationDate.toLocal().toIso8601String();
-      // String itemType = 'type';
-      var currentLocation = await getLocation();
-      // final item = {'items': ['id', 'gardenControlId', 'title', 'value', 'note']};
-      final data = {
-        'penyadapId': selectedPenyadap,
-        'lat': currentLocation.latitude,
-        'lng': currentLocation.longitude,
-        'items': 
-        kuisioneResult
-            .map((item) => ({
-                  'title': item.question.title,
-                  'value': item.value.toString(),
-                  'status': 'OK',
-                  'type': item.question.type,
-                  'note': 'Normal',
-                }))
-            .toList(),
-      };
-      print(data);
+        // DateTime creationDate = DateTime.now();
+        // String formatDate = creationDate.toLocal().toIso8601String();
+        // String itemType = 'type';
+        var currentLocation = await getLocation();
+        // final item = {'items': ['id', 'gardenControlId', 'title', 'value', 'note']};
+        String uid = Uuid().v4();
+        final data = {
+          'uid': uid,
+          'penyadapId': selectedPenyadap,
+          'lat': currentLocation.latitude,
+          'lng': currentLocation.longitude,
+          'items': kuisioneResult
+              .map((item) => ({
+                    'title': item.question.title,
+                    'value': item.value.toString(),
+                    'status': 'OK',
+                    'type': item.question.type,
+                    'note': 'Normal',
+                  }))
+              .toList(),
+        };
+        print(data);
 
-      final response = await http_service.post(addGardenControl(), body: data);
-      if (response.isSuccess) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Sukses')));
+        final response =
+            await http_service.post(addGardenControl(), body: data);
+        if (response.isSuccess && mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Sukses')));
+          await sendLocalData();
+          Navigator.pop(context);
+          print('Sukses');
+        } else {
+          print('Gagal');
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Gagal')));
+          offlineGardenBox.put(uid, data);
+          Navigator.pop(context);
+        }
+      } catch (e) {
         Navigator.pop(context);
-        print('Sukses');
       }
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Gagal')));
-      print('Gagal');
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
+
 part 'nira.g.dart';
 
 List<Nira> niraFromJson(String str) => List<Nira>.from(json.decode(str).map((x) => Nira.fromJson(x)));
@@ -56,4 +57,5 @@ class Nira {
     Map<String, dynamic> toJson() => _$NiraToJson(this);
 }
 
-  
+
+

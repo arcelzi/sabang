@@ -101,7 +101,7 @@ class _DetailGardenState extends State<DetailGarden> {
                           : detail.type == 'text'
                               ? Text('${detail.value}',
                                   style: TextStyle(fontSize: 16, color: Colors.grey.shade800))
-                              : Image.network('${detail.value}'))
+                              : Image.network('${detail.value}', fit: BoxFit.cover,))
               ],
             ),
           ),

@@ -312,7 +312,7 @@ Future<HTTPResponse> delete(url, {Object? body, Duration timeoutDuration = const
 }
 
 HTTPResponse responseCheck(Response response) {
-  log(response.body);
+  // log(response.body);
   var result = jsonDecode(response.body);
     if ([200, 201].contains(response.statusCode)) {
       // if (result['isSuccess']) {

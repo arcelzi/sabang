@@ -3,6 +3,105 @@
 part of 'garden_control.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class GardenControlAdapter extends TypeAdapter<GardenControl> {
+  @override
+  final int typeId = 1;
+
+  @override
+  GardenControl read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return GardenControl(
+      penyadapId: fields[0] as num?,
+      icsId: fields[1] as num?,
+      timestamp: fields[2] as DateTime,
+      lat: fields[3] as num?,
+      lng: fields[4] as num?,
+      id: fields[5] as int?,
+      items: (fields[6] as List).cast<GardenControlItems>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, GardenControl obj) {
+    writer
+      ..writeByte(7)
+      ..writeByte(0)
+      ..write(obj.penyadapId)
+      ..writeByte(1)
+      ..write(obj.icsId)
+      ..writeByte(2)
+      ..write(obj.timestamp)
+      ..writeByte(3)
+      ..write(obj.lat)
+      ..writeByte(4)
+      ..write(obj.lng)
+      ..writeByte(5)
+      ..write(obj.id)
+      ..writeByte(6)
+      ..write(obj.items);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GardenControlAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class GardenControlItemsAdapter extends TypeAdapter<GardenControlItems> {
+  @override
+  final int typeId = 2;
+
+  @override
+  GardenControlItems read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return GardenControlItems(
+      id: fields[0] as int,
+      title: fields[1] as String,
+      value: fields[2] as String?,
+      type: fields[3] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, GardenControlItems obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.value)
+      ..writeByte(3)
+      ..write(obj.type);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GardenControlItemsAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

@@ -1,13 +1,16 @@
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+
 import 'package:sabang/services/common/api_endpoints.dart';
 // import 'package:http/http.dart' as http;
 import 'package:sabang/services/http.dart' as http_service;
 import 'package:sabang/models/users.dart';
-
+import 'package:uuid/uuid.dart';
 import 'package:location/location.dart';
 import 'package:sabang/utils/local_storage.dart';
 
@@ -62,6 +65,8 @@ class _AddPurchaseState extends State<AddPurchase> {
   String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
+  late Box offlineDataBox;
+  late Box<Users> usersBox;
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
@@ -70,26 +75,72 @@ class _AddPurchaseState extends State<AddPurchase> {
   @override
   void initState() {
     super.initState();
+    initial();
+    
+
+  }
+
+  initial() async {
+    offlineDataBox = await Hive.openBox('purchase');
+    usersBox = await Hive.openBox<Users>('usersBox');
+    listpenyadap = usersBox.values.toList();
+    setState(() { });
     getPenyadap();
+  }
+
+  Future<void> sendLocalDataToServer() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      for (var purchaseData in offlineDataBox.values) {
+        await uploadDataToServer(purchaseData);
+      }
+
+      offlineDataBox.clear();
+    }
+  }
+
+  Future<void> uploadDataToServer(Map<String, dynamic> data) async {
+    try {
+      final response = await http_service.post(addNira(), body: data);
+
+      if (response.isSuccess) {
+        print('Upload sukses');
+      } else {
+        print('Upload gagal dengan status kode: ${response.statusCode}');
+        offlineDataBox.put(Uuid().v4(), data);
+      }
+    } catch (error) {
+      print('Error saat sedang upload : $error');
+      offlineDataBox.put(Uuid().v4(), data);
+    }
   }
 
   List<Users> listpenyadap = [];
   getPenyadap() async {
     try {
-      final response = await http_service.get(getTappers());
-      if (response.isSuccess) {
-        print(response.data);
-        for (var item in response.data) {
-          print(item);
-          listpenyadap.add(Users(
-              id: item['id'], name: item['name'], username: item['username']));
-        }
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectionState.none) {
+        listpenyadap = usersBox.values.toList();
         setState(() {});
+      } else {
+        final response = await http_service.get(getTappers());
+        if (response.isSuccess) {
+          listpenyadap = [];
+          print(response.data);
+          for (var item in response.data) {
+            print(item);
+            Users users = Users.fromJson(item);
+            listpenyadap.add(users);
+            usersBox.put(item['id'], users);
+          }
+          setState(() {});
+        }
       }
     } on SocketException {
       throw Exception('No internet');
     } catch (e) {
-      throw Exception('Error mengambil data');
+      throw Exception('Error mengambil data: $e');
     }
   }
 
@@ -105,14 +156,14 @@ class _AddPurchaseState extends State<AddPurchase> {
             },
             icon: Icon(
               FontAwesomeIcons.angleLeft,
-              color: Colors.black,
+              color: Colors.white,
             )),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF78937A),
         elevation: 0,
         title: Text(
           "Add Purchases",
           style: GoogleFonts.sourceSansPro(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(
@@ -224,7 +275,6 @@ class _AddPurchaseState extends State<AddPurchase> {
               child: ElevatedButton(
                   onPressed: () {
                     submitNira();
-                    showLoadingDialogNotdismissible(context);
                   },
                   // () async {
                   //   num ph = num.parse(_phController.text);
@@ -236,7 +286,7 @@ class _AddPurchaseState extends State<AddPurchase> {
                   //   //   });
                   // },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE0ADA2),
+                      backgroundColor: Color(0xFFB99470),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
                   child: Text(
@@ -254,48 +304,54 @@ class _AddPurchaseState extends State<AddPurchase> {
   }
 
   void submitNira() async {
-    
     if (_formKey.currentState!.validate()) {
-      getLocation().then((value) {
-        print(value);
-      });
+      showLoadingDialogNotdismissible(context);
+      try {
+        getLocation().then((value) {
+          print(value);
+        });
 
-      var currentLocation = await getLocation();
+        var currentLocation = await getLocation();
 
-      final ph = num.parse(_phController.text);
-      final sugarLevel = num.parse(_brixController.text);
-      final volume = num.parse(_volumeController.text);
-      final body = {
-        "penyadapId": selectedPenyadap,
-        "purchaserId": 0,
-        "ph": ph,
-        "sugarLevel": sugarLevel,
-        "volume": volume,
-        "lat": currentLocation.latitude,
-        "lng": currentLocation.longitude
-      };
-      print(body);
+        final ph = num.parse(_phController.text);
+        final sugarLevel = num.parse(_brixController.text);
+        final volume = num.parse(_volumeController.text);
+        String uid = Uuid().v4();
+        final body = {
+          'uid': uid,
+          "penyadapId": selectedPenyadap,
+          "purchaserId": 0,
+          "ph": ph,
+          "sugarLevel": sugarLevel,
+          "volume": volume,
+          "lat": currentLocation.latitude,
+          "lng": currentLocation.longitude
+        };
+        print(body);
 
-      final response = await http_service.post(
-        addNira(),
-        body: body,
-      );
+        final response = await http_service.post(
+          addNira(),
+          body: body,
+        );
 
-      if (response.isSuccess && mounted) {
-        
-        print('Creation Succes');
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Sukses"), elevation: 0,));
-        
+        if (response.isSuccess && mounted) {
+          print('Creation Succes');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Sukses"),
+            elevation: 0,
+          ));
+          await sendLocalDataToServer();
+          Navigator.pop(context);
+        } else {
+          print('Creation Failed');
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Gagal, Data disimpan di offline")));
+          offlineDataBox.put(uid, body);
+          print(response.data);
+          Navigator.pop(context);
+        }
+      } catch (e) {
         Navigator.pop(context);
-        
-      } else {
-        print('Creation Failed');
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Gagal")));
-        
-        print(response.data);
-        
       }
     }
   }
@@ -313,7 +369,7 @@ class _AddPurchaseState extends State<AddPurchase> {
 var _phController = TextEditingController();
 var _brixController = TextEditingController();
 var _volumeController = TextEditingController();
-int? selectedPenyadap = null;
+int? selectedPenyadap;
 
 TextFormField buildPh() {
   return TextFormField(

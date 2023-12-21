@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,41 +27,58 @@ class _PurchasePageState extends State<PurchasePage> {
   // final TextEditingController searchController = TextEditingController();
   final String FontPoppins = 'FontPoppins';
   final List<Nira> nira = [];
+  bool isConnected = true;
+  var selectedItem = '';
 
   // void main(DateTime timestamp) async {
   //   await initializeDateFormatting('id_ID', null);
   //   // formatDate(timestamp);
-  //   print(DateFormat.yMMMMd('id_ID').format(DateTime.now()));     
+  //   print(DateFormat.yMMMMd('id_ID').format(DateTime.now()));
   // }
 
   // String formatDate(DateTime timestamp) {
   //   final DateFormat formatter = DateFormat('dd-MM-yyyy', 'Asia/Jakarta');
   //   return formatter.format(timestamp);
   // }
-  
-  
 
-  Future<List<Nira?>> getNira() async {
+  Future<void> loadCachedData() async {
+    nira.clear();
     final cachedData = Hive.box<List>('nira_cache').get('nira_cache_key');
     if (cachedData != null) {
-      nira.addAll(cachedData.map((item) => Nira.fromJson(item)));
+      setState(() {
+        nira.addAll(cachedData.map((item) => Nira.fromJson(item)));
+      });
+      print(nira.length);
     }
-    final response = await http_service.get(getPurchase());
+  }
 
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      var result = response.data;
-      if (result is List) {
-        Hive.box<List>('nira_cache').put('nira_cache_key', result);
-        nira.clear();
-          nira.addAll(result.map((item) => Nira.fromJson(item)));
-        
+  Future<void> getNira() async {
+    try {
+      if (isConnected) {
+        final response = await http_service.get(getPurchase());
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+          var result = response.data;
+          if (result is List) {
+            Hive.box<List>('nira_cache').put('nira_cache_key', result);
+            nira.clear();
+            setState(() {
+              
+              nira.addAll(result.map((item) => Nira.fromJson(item)));
+            });
+          }
+        } else {
+          print(response.data);
+        }
+      } else {
+        loadCachedData();
       }
-    } else {
-      print(response.data);
+    } catch (e) {
+      print('Error mengambil data: $e');
+      if (!isConnected) {
+        showNoInternetToast();
+      }
     }
-    setState(() {});
-    return nira;
   }
 
   @override
@@ -73,19 +89,30 @@ class _PurchasePageState extends State<PurchasePage> {
   @override
   void initState() {
     openHiveBoxes();
-    getNira();
     getCred();
     super.initState();
     checkInternetConnection();
-  }
-
-  void checkInternetConnection () async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      showNoInternetToast();
+    if (isConnected) {
+      getNira();
+    } else {
+      loadCachedData();
     }
   }
-  
+
+  Future<void> checkInternetConnection() async {
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      setState(() {
+        isConnected = connectivityResult != ConnectivityResult.none;
+      });
+      if (!isConnected) {
+        showNoInternetToast();
+      }
+    } catch (e) {
+      print('Error, memeriksa koneksi internet');
+    }
+  }
+
   void openHiveBoxes() async {
     await Hive.initFlutter();
     await Hive.openBox<List>('nira_cache');
@@ -93,16 +120,13 @@ class _PurchasePageState extends State<PurchasePage> {
 
   void showNoInternetToast() {
     Fluttertoast.showToast(
-      msg: 'Tidak ada koneksi internet',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 5,
-      backgroundColor: Colors.grey,
-      textColor: Colors.black,
-      fontSize: 16.0
-
-      
-    );
+        msg: 'Tidak ada koneksi internet',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.grey,
+        textColor: Colors.black,
+        fontSize: 16.0);
   }
 
   void getCred() async {
@@ -119,39 +143,59 @@ class _PurchasePageState extends State<PurchasePage> {
       getNira();
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FB),
       appBar: AppBar(
+        actions: [
+          PopupMenuButton(
+            onSelected: (value) {
+              setState(() {
+                selectedItem = value.toString();
+              });
+              Navigator.pushNamed(context, value.toString());
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text('Data offline', style: TextStyle(color: Colors.black),),
+                value: '/dataOffline',
+              ),
+
+            ],
+            
+            elevation: 0,
+            shadowColor: Colors.black,
+            surfaceTintColor: Colors.black,
+          )
+        ],
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
             icon: Icon(
               FontAwesomeIcons.angleLeft,
-              color: Colors.black,
+              color: Colors.white,
             )),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF78937A),
         elevation: 0,
         centerTitle: true,
         title: Text(
           "Purchases",
           style: GoogleFonts.sourceSansPro(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: _refresh ,
+        onRefresh: _refresh,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              SizedBox(
-                height: 20,
-              ),
+              // SizedBox(
+              //   height: 20,
+              // ),
               // TextField(
               //   controller: searchController,
               //   onChanged: (value) => (),
@@ -176,16 +220,16 @@ class _PurchasePageState extends State<PurchasePage> {
               //         color: Color(0xFFA9A9A9),
               //       )),
               // ),
-              SizedBox(
-                height: 20,
-              ),
+              // SizedBox(
+              //   height: 20,
+              // ),
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     return Card(
                         child: Container(
                       decoration: BoxDecoration(
-                          color: Color(0xFF78937A),
+                          color: Color(0xFFB99470),
                           borderRadius: BorderRadius.circular(5)),
                       child: Padding(
                         padding: EdgeInsets.all(8),
@@ -198,7 +242,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
-                                "Kadar Gula : " + nira[index].sugarLevel.toString(),
+                                "Kadar Gula : " +
+                                    nira[index].sugarLevel.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
@@ -209,8 +254,10 @@ class _PurchasePageState extends State<PurchasePage> {
                                 "Harga: " + nira[index].amount.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
-                              Text("Tanggal : " +
-                               DateFormat('d MMM yyyy').format(nira[index].timestamp),
+                              Text(
+                                "Tanggal : " +
+                                    DateFormat('d MMM yyyy')
+                                        .format(nira[index].timestamp),
                                 style: TextStyle(color: Colors.white),
                               )
                             ]),
@@ -231,9 +278,8 @@ class _PurchasePageState extends State<PurchasePage> {
         },
         backgroundColor: Color(0xFFE5E1E1),
         child: Icon(FontAwesomeIcons.plus),
-        foregroundColor: Color(0xFFE0ADA2),
+        foregroundColor: Color(0xFF78937A),
       ),
     );
   }
-  
 }
