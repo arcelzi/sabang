@@ -178,8 +178,8 @@ class _GardenControlPageState extends State<GardenControlPage> {
               Navigator.pushNamed(context, value.toString());
             },
             itemBuilder: (context) => [
-              PopupMenuItem(child: Text('Data Offline', style: TextStyle(color: Colors.black),),
-              value: '/dataOffline' ,),
+              PopupMenuItem(child: Text('Garden Offline', style: TextStyle(color: Colors.black),),
+              value: '/offlineGarden' ,),
               PopupMenuItem(child: Text("Tambah Garden Control", style: TextStyle(color: Colors.black),),
               value: '/tambahData',)
             ],)

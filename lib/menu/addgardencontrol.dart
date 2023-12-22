@@ -126,11 +126,11 @@ class _AddGardenState extends State<AddGarden> {
       if (response.isSuccess) {
         print('Upload sukses');
       } else {
-        print('Upload gagal');
+        print('Upload gagal: ${response.statusCode}');
         offlineGardenBox.put(Uuid().v4(), data);
       }
     } catch (e) {
-      print('Error saat sedang upload');
+      print('Error saat sedang upload: $e');
       offlineGardenBox.put(Uuid().v4(), data);
     }
   }
@@ -234,23 +234,23 @@ class _AddGardenState extends State<AddGarden> {
   // }
 
   //gallery
-  Future _pickFromGallery(Kuisioner kuisioner) async {
-    final returnImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  // Future _pickFromGallery(Kuisioner kuisioner) async {
+  //   final returnImage =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (returnImage == null) return;
-    Uint8List bytesImage = await returnImage.readAsBytes();
-    LocationData currentLocation = await getLocation();
-    setState(() {
-      imageBase64 = base64.encode(bytesImage);
-      kuisioner.value = imageBase64;
-      currentLocation.latitude;
-      currentLocation.longitude;
-      // _image = File(returnImage.path);
-      // selectedImage = File(returnImage.path).readAsBytesSync();
-    });
-    Navigator.pop(context);
-  }
+  //   if (returnImage == null) return;
+  //   Uint8List bytesImage = await returnImage.readAsBytes();
+  //   LocationData currentLocation = await getLocation();
+  //   setState(() {
+  //     imageBase64 = base64.encode(bytesImage);
+  //     kuisioner.value = imageBase64;
+  //     currentLocation.latitude;
+  //     currentLocation.longitude;
+  //     // _image = File(returnImage.path);
+  //     // selectedImage = File(returnImage.path).readAsBytesSync();
+  //   });
+  //   Navigator.pop(context);
+  // }
 
   //camera
   Future _pickFromCamera(Kuisioner kuisioner) async {
@@ -352,20 +352,20 @@ class _AddGardenState extends State<AddGarden> {
               height: MediaQuery.of(context).size.height / 4.5,
               child: Row(
                 children: [
-                  Expanded(
-                      child: InkWell(
-                    onTap: () {
-                      _pickFromGallery(kuisioner);
-                    },
-                    child: const SizedBox(
-                      child: Column(
-                        children: [
-                          Icon(Icons.image, size: 40),
-                          Text('Gallery')
-                        ],
-                      ),
-                    ),
-                  )),
+                  // Expanded(
+                  //     child: InkWell(
+                  //   onTap: () {
+                  //     // _pickFromGallery(kuisioner);
+                  //   },
+                  //   child: const SizedBox(
+                  //     child: Column(
+                  //       children: [
+                  //         Icon(Icons.image, size: 40),
+                  //         Text('Gallery')
+                  //       ],
+                  //     ),
+                  //   ),
+                  // )),
                   Expanded(
                       child: InkWell(
                     onTap: () {
@@ -463,14 +463,14 @@ class _AddGardenState extends State<AddGarden> {
             },
             icon: Icon(
               FontAwesomeIcons.angleLeft,
-              color: Colors.black,
+              color: Colors.white,
             )),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF78937A),
         elevation: 0,
         title: Text(
           "Garden Control",
           style: GoogleFonts.sourceSansPro(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: Form(
@@ -672,8 +672,10 @@ class _AddGardenState extends State<AddGarden> {
                     'status': 'OK',
                     'type': item.question.type,
                     'note': 'Normal',
+                    'lat': currentLocation.latitude,
+                    'lng': currentLocation.longitude
                   }))
-              .toList(),
+              .toList()
         };
         print(data);
 
@@ -688,8 +690,9 @@ class _AddGardenState extends State<AddGarden> {
         } else {
           print('Gagal');
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Gagal')));
+              .showSnackBar(SnackBar(content: Text('Gagal, data disimpan di offline')));
           offlineGardenBox.put(uid, data);
+          print(response.data);
           Navigator.pop(context);
         }
       } catch (e) {

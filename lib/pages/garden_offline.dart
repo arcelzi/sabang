@@ -14,58 +14,58 @@ class GardenOffline extends StatefulWidget {
 }
 
 class _GardenOfflineState extends State<GardenOffline> {
-  late Box offlineDataBox;
-  List offlineDataList = [];
+  late Box offlineGardenBox;
+  List offlineGardenList = [];
   @override
   void initState() {
     super.initState();
 
     initial();
   }
+
   initial() async {
-    offlineDataBox = await Hive.openBox('gardenControl');
-    offlineDataList = offlineDataBox.values.toList();
-    setState(() {
-      
-    });
+    offlineGardenBox = await Hive.openBox('gardenControl');
+    offlineGardenList = offlineGardenBox.values.toList();
+    setState(() {});
   }
-  void uploadData(Map<String,dynamic> data) async {
+
+  void uploadData(Map<String, dynamic> data) async {
     try {
       final response = await http_service.post(addGardenControl(), body: data);
 
       if (response.isSuccess) {
         Fluttertoast.showToast(
-          msg: 'Upload sukses',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: Colors.grey,
-          textColor: Colors.black,
-          fontSize: 16.0
-          );
-          Navigator.pop(context);
+            msg: 'Upload sukses',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.grey,
+            textColor: Colors.black,
+            fontSize: 16.0);
+        Navigator.pop(context);
       } else {
         Fluttertoast.showToast(
-          msg: 'Upload gagal',
-          backgroundColor: Colors.grey,
-          textColor: Colors.black,
-          timeInSecForIosWeb: 5,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          fontSize: 16.0);
-          Navigator.pop(context);
-      } 
+            msg: 'Upload gagal',
+            backgroundColor: Colors.grey,
+            textColor: Colors.black,
+            timeInSecForIosWeb: 5,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            fontSize: 16.0);
+        Navigator.pop(context);
+      }
     } catch (e) {
       print('Error saat sedang upload');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FB),
       appBar: AppBar(
         title: Text(
-          'Data Offline',
+          'Garden Offline',
           style: GoogleFonts.sourceSansPro(
               fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
         ),
@@ -86,48 +86,98 @@ class _GardenOfflineState extends State<GardenOffline> {
 
   Widget buildOfflineDataList() {
     return ListView.builder(
-      itemCount: offlineDataList.length,
-      itemBuilder: (context, index) {
-       var gardenData = offlineDataList[index];
-        return ListTile(
-          title: Text('${gardenData}'),
-          trailing: IconButton(onPressed: (){
-            showDialog(
-              context: context, builder: ((context) {
-                return AlertDialog(
-                  content: IntrinsicHeight(
-                    child: Column(
-                      children: [
-                        Text('Apakah anda yakin ingin upload?'),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  // TODO upload
-                                  uploadData(gardenData);
-                                  // delete
-                                  offlineDataBox.delete(gardenData['uid']);
-                                }, 
-                                child: const Text('Ya'),
+        itemCount: offlineGardenList.length,
+        itemBuilder: (context, index) {
+          var gardenData = offlineGardenList[index];
+          return ListTile(
+            title: Text('Penyadap Id: ${gardenData['penyadapId']}'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return AlertDialog(
+                              content: IntrinsicHeight(
+                                child: Column(
+                                  children: [
+                                    Text('Apakah anda yakin ingin upload?'),
+                                    Expanded(
+                                        child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            // TODO upload
+                                            print(gardenData);
+                                            uploadData(gardenData);
+                                            // delete
+                                            offlineGardenBox
+                                                .delete(gardenData['uid']);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Ya'),
+                                        ),
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Tidak'))
+                                      ],
+                                    ))
+                                  ],
                                 ),
-                                TextButton(
-                                  onPressed: (){
-                                    Navigator.pop(context);
-                                }, 
-                                child: const Text('Tidak'))
-                            ],
-                          ))
-                      ],
-                    ),
+                              ),
+                            );
+                          }));
+                    },
+                    icon: Icon(Icons.cloud_upload)),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: IntrinsicHeight(
+                            child: Column(
+                              children: [
+                                Text('Apakah anda yakin ingin hapus?'),
+                                Expanded(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          //delete
+                                          offlineGardenBox
+                                              .delete(gardenData['uid']);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Ya')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Tidak'))
+                                  ],
+                                ))
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.delete,
                   ),
-                );
-              }));
-          }, icon: Icon(Icons.cloud_upload)),
-        );
-      });
-
+                  color: Color(0xFFEC5353),
+                ),
+              ],
+            ),
+          );
+        });
   }
-  
 }

@@ -65,6 +65,8 @@ class _DetailGardenState extends State<DetailGarden> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Color(0xFFF5F6FB),
         appBar: AppBar(
@@ -94,14 +96,30 @@ class _DetailGardenState extends State<DetailGarden> {
                 if (_garden.items.isNotEmpty) Text('Item Details : '),
                 for (GardenControlItems detail in _garden.items)
                   ListTile(
-                      title: Text('${detail.title}',style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),),
+                      title: Text(
+                        '${detail.title}',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
+                      ),
                       subtitle: detail.type == 'check'
                           ? Text(detail.value == 'true' ? 'Ya' : 'Tidak',
-                              style: TextStyle(fontSize: 16, color: Colors.grey.shade800))
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.grey.shade800))
                           : detail.type == 'text'
                               ? Text('${detail.value}',
-                                  style: TextStyle(fontSize: 16, color: Colors.grey.shade800))
-                              : Image.network('${detail.value}', fit: BoxFit.cover,))
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey.shade800))
+                              : Container(
+                                width: screenWidth * 0.3 ,
+                                height: screenHeight * 0.2 ,
+                                child: Image.network(
+                                    '${detail.value}',
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                              ))
               ],
             ),
           ),
