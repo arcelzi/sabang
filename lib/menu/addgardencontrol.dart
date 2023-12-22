@@ -1,6 +1,7 @@
 // import 'dart:convert';
 import 'dart:convert';
 import 'dart:io';
+// import 'dart:js_interop';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -455,13 +456,13 @@ class _AddGardenState extends State<AddGarden> {
 
   bool validateForm() {
     for (var item in kuisioneResult) {
-      if (item.question.type == 'text' && (item.value == null || item.value.isEmpty)) {
+      if (item.question.type == 'text' && (item.value == null)) {
         errorMessage = 'Harap isi semua pertanyaan teks';
         return false;
-      } else if(item.question.type == 'image' && (item.value == null || item.value.isEmpty)) {
+      } else if(item.question.type == 'image' && (item.value == null)) {
         errorMessage = 'Harap unggah gambar yang masih kosong';
         return false;
-      } else if(item.question.type == 'check' && (item.value == null || item.value.isEmpty)) {
+      } else if(item.question.type == 'check' && (item.value == null)) {
         errorMessage = 'Harap isi semua checklist yang masih kosong';
         return false;
       }
@@ -722,7 +723,7 @@ class _AddGardenState extends State<AddGarden> {
         Navigator.pop(context);
       } 
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Mohon lengkapi semua pertanyaan')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage ?? 'Mohon lengkapi semua pertanyaan')));
     }
   }
 

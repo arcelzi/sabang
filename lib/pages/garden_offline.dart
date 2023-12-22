@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:sabang/pages/gardencontrol_page.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
 import 'package:sabang/services/http.dart' as http_service;
+import 'package:sabang/widgets/toast.dart';
 
 class GardenOffline extends StatefulWidget {
   const GardenOffline({super.key});
@@ -41,25 +42,9 @@ class _GardenOfflineState extends State<GardenOffline> {
       final response = await http_service.post(addGardenControl(), body: data);
 
       if (response.isSuccess) {
-        Fluttertoast.showToast(
-            msg: 'Upload sukses',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 5,
-            backgroundColor: Colors.grey,
-            textColor: Colors.black,
-            fontSize: 16.0);
-        Navigator.pop(context);
+        CustomToast.show(context, 'Upload sukses', isSuccess: true);
       } else {
-        Fluttertoast.showToast(
-            msg: 'Upload gagal',
-            backgroundColor: Colors.grey,
-            textColor: Colors.black,
-            timeInSecForIosWeb: 5,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            fontSize: 16.0);
-        Navigator.pop(context);
+        CustomToast.show(context, 'Upload gagal', isSuccess: false);
       }
     } catch (e) {
       print('Error saat sedang upload');
