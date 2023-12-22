@@ -58,6 +58,7 @@ Future<LocationData> getLocation() async {
 }
 
 class _AddGardenState extends State<AddGarden> {
+  String? errorMessage;
   String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
   final _formKey = GlobalKey<FormState>();
@@ -452,6 +453,22 @@ class _AddGardenState extends State<AddGarden> {
     }
   }
 
+  bool validateForm() {
+    for (var item in kuisioneResult) {
+      if (item.question.type == 'text' && (item.value == null || item.value.isEmpty)) {
+        errorMessage = 'Harap isi semua pertanyaan teks';
+        return false;
+      } else if(item.question.type == 'image' && (item.value == null || item.value.isEmpty)) {
+        errorMessage = 'Harap unggah gambar yang masih kosong';
+        return false;
+      } else if(item.question.type == 'check' && (item.value == null || item.value.isEmpty)) {
+        errorMessage = 'Harap isi semua checklist yang masih kosong';
+        return false;
+      }
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -564,6 +581,12 @@ class _AddGardenState extends State<AddGarden> {
                       ),
                     if (item.question.type == 'text')
                       TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Tolong masukkan keterangan';
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color(0xFFE9E9E9),
@@ -647,7 +670,7 @@ class _AddGardenState extends State<AddGarden> {
   }
 
   void submitGarden() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && validateForm()) {
       showLoadingDialogNotdismissible(context);
       try {
         getLocation().then((value) {
@@ -697,7 +720,9 @@ class _AddGardenState extends State<AddGarden> {
         }
       } catch (e) {
         Navigator.pop(context);
-      }
+      } 
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Mohon lengkapi semua pertanyaan')));
     }
   }
 

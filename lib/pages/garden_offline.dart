@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:sabang/pages/gardencontrol_page.dart';
 import 'package:sabang/services/common/api_endpoints.dart';
 import 'package:sabang/services/http.dart' as http_service;
 
@@ -29,7 +30,13 @@ class _GardenOfflineState extends State<GardenOffline> {
     setState(() {});
   }
 
-  void uploadData(Map<String, dynamic> data) async {
+  void refreshData() {
+    setState(() {
+      offlineGardenList = offlineGardenBox.values.toList();
+    });
+  }
+
+  Future<void> uploadData(Map<String, dynamic> data) async {
     try {
       final response = await http_service.post(addGardenControl(), body: data);
 
@@ -109,14 +116,33 @@ class _GardenOfflineState extends State<GardenOffline> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         TextButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             // TODO upload
-                                            print(gardenData);
-                                            uploadData(gardenData);
-                                            // delete
-                                            offlineGardenBox
-                                                .delete(gardenData['uid']);
-                                            Navigator.pop(context);
+                                            try {
+                                              print(gardenData);
+                                              uploadData(gardenData).then(
+                                                  (value) => refreshData());
+                                              // delete
+                                              offlineGardenBox
+                                                  .delete(gardenData['uid']);
+                                              Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        GardenControlPage(),
+                                                  ));
+                                            } catch (e) {
+                                              // TODO
+                                              Fluttertoast.showToast(
+                                                  msg: 'Upload gagal',
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.black,
+                                                  timeInSecForIosWeb: 5,
+                                                  toastLength: Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  fontSize: 16.0);
+                                              Navigator.pop(context);
+                                            }
                                           },
                                           child: const Text('Ya'),
                                         ),
@@ -152,7 +178,8 @@ class _GardenOfflineState extends State<GardenOffline> {
                                         onPressed: () {
                                           //delete
                                           offlineGardenBox
-                                              .delete(gardenData['uid']);
+                                              .delete(gardenData['uid'])
+                                              .then((value) => refreshData());
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Ya')),
