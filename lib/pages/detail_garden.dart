@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sabang/models/garden_control.dart';
+import 'package:sabang/widgets/toast.dart';
 // import 'package:sabang/pages/gardencontrol_page.dart';
 // import 'package:sabang/services/http.dart' as http_service;
 
@@ -62,6 +63,24 @@ class _DetailGardenState extends State<DetailGarden> {
 
   //   setState(() {});
   // }
+  void _showImageDialog(String imageUrl) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context); // Tutup dialog saat gambar ditekan
+          },
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.contain, // Untuk menampilkan gambar dengan ukuran aslinya
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -110,15 +129,24 @@ class _DetailGardenState extends State<DetailGarden> {
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.grey.shade800))
-                              : Container(
-                                width: screenWidth * 0.3 ,
-                                height: screenHeight * 0.2 ,
-                                child: Image.network(
-                                    '${detail.value}',
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
+                              : GestureDetector(
+                                onTap: (){
+                                  if(detail.value != null) {
+                                  _showImageDialog(detail.value!);
+                                  } else {
+                                    CustomToast.show(context, 'Error', isSuccess: false);
+                                  }
+                                },
+                                child: Container(
+                                  width: screenWidth * 0.3 ,
+                                  height: screenHeight * 0.2 ,
+                                  child: Image.network(
+                                      '${detail.value ?? ''}',
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                                ),
                               ))
               ],
             ),
