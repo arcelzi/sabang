@@ -1,4 +1,4 @@
-const String baseAuthUrl = "http://192.168.102.151:3001";
+const String baseAuthUrl = "http://192.168.102.151:3801";
 
 
 
@@ -21,4 +21,6 @@ String getGardenControl() => "$baseAuthUrl/garden-controls";
 String addGardenControl() => "$baseAuthUrl/garden-controls";
 String checkGardenControl() => "$baseAuthUrl/checklists/";
 
-
+//dashboar
+String getVolume() => "$baseAuthUrl/purchases/total-volume";
+String getProduction() => "$baseAuthUrl/productions/total-weight";

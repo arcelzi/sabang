@@ -7,6 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sabang/menu/profile/profile.dart';
 import 'package:sabang/utils/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sabang/services/http.dart' as http_service;
+
+import '../services/common/api_endpoints.dart';
 
 
 void main() {
@@ -23,6 +26,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard>{
   String token = LocalStorage.getToken();
   final String FontPoppins = 'FontPoppins';
+  String? volume;
+  String? production;
     List menuList = [
     {
       "icon": FontAwesomeIcons.cartShopping,
@@ -40,10 +45,50 @@ class _DashboardState extends State<Dashboard>{
     //   "color": Color(0xFF78937A)
     // },
   ];
+
+  Future<void> loadData() async {
+    final volumeData = await getVolumeApi();
+    final productionData = await getProductionApi();
+
+    if (volumeData != null && productionData != null) {
+      setState(() {
+        volume = volumeData;
+        production = productionData;
+      });
+    }
+  }
+
+  Future<String?> getVolumeApi() async {
+    try {
+        final response = await http_service.get(getVolume()  );
+        
+        if (response.statusCode == 200) {
+          return response.data['totalVolume'];
+          
+      } else {
+        print('Gagal mengambil data volume. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error saat mengambil data volume: $e');
+    }
+    return null;
+  }
+  Future<String?> getProductionApi() async {
+  try {
+    final response = await http_service.get(getProduction());
+    if (response.statusCode == 200) {
+      return response.data['totalWeight'].toString(); // Misalkan 'production' adalah field dalam respons
+    }
+  } catch (e) {
+    print("Error saat mengambil data production: $e");
+  }
+  return null;
+}
   @override
   void initState() {
     super.initState();
     getCred();
+    loadData();
   }
 
   void getCred() async {
@@ -58,165 +103,169 @@ class _DashboardState extends State<Dashboard>{
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 55,
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 26, right: 28),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Dashboard",
-                        style: GoogleFonts.sourceSansPro(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  CircleAvatar(
-                    backgroundColor: Color(0xFFE0ADA2),
-                    child: IconButton(
-                      icon: Icon(FontAwesomeIcons.user, color: Colors.white,),
-                      onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: ((context) => Profile())));
-                      },
-                    ),
-                  )
-                ],
+        child: RefreshIndicator(
+          onRefresh: loadData,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 55,
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 60),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    height: 107,
-                    width: 336,
-                    decoration: BoxDecoration(
-                        color: Color(0xFF78937A),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Padding(
+                padding: EdgeInsets.only(left: 26, right: 28),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 50, top: 20),
-                          child: Column(
-                            children: [
-                              Text(
-                                '10 Liter',
-                                style:GoogleFonts.sourceSansPro(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Nira Hari ini',
-                                style: GoogleFonts.sourceSansPro(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 75.82, top: 20),
-                          child: Column(
-                            children: [
-                              Text(
-                                "100KG",
-                                style: GoogleFonts.sourceSansPro(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Production',
-                                style: GoogleFonts.sourceSansPro(
-                                   fontSize: 16, color: Colors.white, fontWeight: FontWeight.w300),
-                              ),
-                            ],
-                          ),
+                        Text(
+                          "Dashboard",
+                          style: GoogleFonts.sourceSansPro(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(top: 55, left: 20, right: 20),
-                child: Column(
-                  children: [
-                    LayoutBuilder(builder: (context, constraint) {
-                      return Wrap(
-                        spacing: 20,
-                        runSpacing: 27,
-                        children: List.generate(menuList.length, (index) {
-                          var item = menuList[index];
-                          return InkWell(
-                            onTap: (){
-                              if (index == 0) 
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> PurchasePage()));
-                              if (index == 1)
-                              Navigator.push(context, MaterialPageRoute(builder: ((context) => GardenControlPage())));
-                              // if (index == 2)
-                              // Navigator.push(context, MaterialPageRoute(builder: ((context) => PurchasePage())));
-                            },
-                            child: Container(
-                              height: 129.0,
-                              width: 338.0,
-                              decoration: BoxDecoration(
-                                  color: item["color"],
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    item["icon"],
-                                    size: 60,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(height: 17,),
-                                  Text(
-                                    item["title"],
-                                    style: GoogleFonts.sourceSansPro(
-                                      color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                      );
-                    })
+                    CircleAvatar(
+                      backgroundColor: Color(0xFFE0ADA2),
+                      child: IconButton(
+                        icon: Icon(FontAwesomeIcons.user, color: Colors.white,),
+                        onPressed: () {
+                          Navigator.push(context,MaterialPageRoute(builder: ((context) => Profile())));
+                        },
+                      ),
+                    )
                   ],
                 ),
               ),
-            )
-          ],
+              Container(
+                margin: EdgeInsets.only(top: 60),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      height: 107,
+                      width: 336,
+                      decoration: BoxDecoration(
+                          color: Color(0xFF78937A),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 50, top: 20),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${volume ?? 0} Liter',
+                                  style:GoogleFonts.sourceSansPro(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Nira',
+                                  style: GoogleFonts.sourceSansPro(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(right: 75.82, top: 20),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "${production ?? 0.0} KG",
+                                  style: GoogleFonts.sourceSansPro(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Production',
+                                  style: GoogleFonts.sourceSansPro(
+                                     fontSize: 16, color: Colors.white, fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 55, left: 20, right: 20),
+                  child: Column(
+                    children: [
+                      LayoutBuilder(builder: (context, constraint) {
+                        return Wrap(
+                          spacing: 20,
+                          runSpacing: 27,
+                          children: List.generate(menuList.length, (index) {
+                            var item = menuList[index];
+                            return InkWell(
+                              onTap: (){
+                                if (index == 0) 
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> PurchasePage()));
+                                if (index == 1)
+                                Navigator.push(context, MaterialPageRoute(builder: ((context) => GardenControlPage())));
+                                // if (index == 2)
+                                // Navigator.push(context, MaterialPageRoute(builder: ((context) => PurchasePage())));
+                              },
+                              child: Container(
+                                height: 129.0,
+                                width: 338.0,
+                                decoration: BoxDecoration(
+                                    color: item["color"],
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      item["icon"],
+                                      size: 60,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(height: 17,),
+                                    Text(
+                                      item["title"],
+                                      style: GoogleFonts.sourceSansPro(
+                                        color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        );
+                      })
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
 
